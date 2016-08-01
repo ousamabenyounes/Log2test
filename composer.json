@@ -1,0 +1,15 @@
+{
+    "name": "ousamabenyounes/log2test",
+    "description": "Transorm your production logs to simple selenium/phpunit tests...",
+    "license": "Apache-2.0",
+    "require": {
+        "kassner/log-parser": "~1.0",
+        "twig/twig": "~1.0",
+        "symfony/yaml": "^3.1"
+    },
+    "autoload": {
+        "psr-4" : {
+            "Log2test\\" : "lib/"
+        }
+    }
+}
