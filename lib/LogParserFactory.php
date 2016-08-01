@@ -1,18 +1,21 @@
 <?php
 
-namespace Kassner\LogParser;
+namespace Log2Test;
 
-class Factory
+
+class LogParserFactory
 {
 
     /**
      * Creates a LogParser instance
      *
-     * @return \Kassner\LogParser\LogParser
+     * @return LogParserInterface
      */
     public static function create()
     {
-        return new LogParser();
+        $logParserClass = ConfigParser::getValueFromKey('logParserClass');
+
+        return new $logParserClass;
     }
 
 }
