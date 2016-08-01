@@ -15,6 +15,5 @@ class Apache2LogParser extends LogParser
      */
     public function generateOneTest($host, $line)
     {
-        // TODO: Implement generateOneTest() method.
     }
 }
