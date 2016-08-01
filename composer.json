@@ -5,8 +5,23 @@
     "require": {
         "kassner/log-parser": "~1.0",
         "twig/twig": "~1.0",
-        "symfony/yaml": "^3.1"
+        "symfony/yaml": "^3.1",
+        "incenteev/composer-parameter-handler": "~2.0"
     },
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ]
+    },
+    "extra": {
+        "incenteev-parameters": {
+            "file": "config/parameters.yml"
+        }
+    },
+
     "autoload": {
         "psr-4" : {
             "Log2test\\" : "lib/"
