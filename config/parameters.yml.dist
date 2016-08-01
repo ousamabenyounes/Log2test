@@ -3,9 +3,8 @@ parameters:
     hosts:
         - site1.com
         - site2.com
-    #Parsing configuration
-    parsing:
-        logFile: #File to parse
-        beginLine:
-        numberOfLine:
-        server: #apache2 for the momment (todo nginx)
+    logFile: log/test.log
+    beginLine: 1
+    numberOfLine: 20
+    logParserClass: \Log2Test\Apache2LogParser
+
