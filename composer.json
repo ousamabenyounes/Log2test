@@ -24,7 +24,7 @@
 
     "autoload": {
         "psr-4" : {
-            "Log2test\\" : "lib/"
+            "Log2Test\\" : "lib/"
         }
     }
 }
