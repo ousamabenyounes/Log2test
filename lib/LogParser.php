@@ -59,7 +59,7 @@ abstract class LogParser implements LogParserInterface
         }
     }
 
-    abstract function generateOneTest($host, $line);
+    public abstract function generateOneTest($host, $line);
 
 
     /********** GETTER AND SETTERS ************/
