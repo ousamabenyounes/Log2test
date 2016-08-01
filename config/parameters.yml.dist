@@ -1,0 +1,11 @@
+parameters:
+    #list of hosts you want to keep from your logs
+    hosts:
+        - site1.com
+        - site2.com
+    #Parsing configuration
+    parsing:
+        logFile: #File to parse
+        beginLine:
+        numberOfLine:
+        server: #apache2 for the momment (todo nginx)
