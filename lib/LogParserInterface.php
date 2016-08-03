@@ -15,12 +15,12 @@ interface LogParserInterface
     public function parse();
 
     /**
-     * Generate One Test for given host & log line content
+     * Parse one log line content and search if one of our host is present
+     * Then Store it on global test configuration array
      *
-     * @param string $host
      * @param string $line
      */
-    public function prepareOneTest($host, $line);
+    public function parseOneLine($line);
 
     /**
      * Add a new test to the given host configuration

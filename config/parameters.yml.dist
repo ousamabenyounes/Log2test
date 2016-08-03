@@ -5,10 +5,9 @@ parameters:
     logFile: log/test.log
     beginLine: 0
     numberOfLine: 300
-    logParserClass: \Log2Test\Apache2LogParser
-    exclude_extension:
-        - js
-        - jpg
+    logParserClass: \Log2Test\CbmLogParser
+    extensions_allowed:
+        - php
+        - html
     browsers:
-        - '*firefox'
         - '*chrome'
