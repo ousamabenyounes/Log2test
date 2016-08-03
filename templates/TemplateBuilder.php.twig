@@ -4,7 +4,7 @@
     public function testAllUrls()
     {
 {% for path in paths %}
-            $this->open("{{ path }}");
+            $this->open('{{ path }}');
 {% endfor %}
     }
 {% endblock %}

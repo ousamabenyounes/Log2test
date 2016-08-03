@@ -46,6 +46,14 @@ abstract class LogParser implements LogParserInterface
     protected $browsers;
 
     /**
+     * list of allowed extension
+     *
+     * @var array
+     */
+    protected $extensions_allowed;
+
+
+    /**
      * Global Test Configuration Array
      * Contains all urls by host
      *
@@ -61,6 +69,7 @@ abstract class LogParser implements LogParserInterface
         $this->setBeginLine(ConfigParser::getValueFromKey('beginLine'));
         $this->setNumberOfLine(ConfigParser::getValueFromKey('numberOfLine'));
         $this->setBrowsers(ConfigParser::getValueFromKey('browsers'));
+        $this->setExtensionsAllowed(ConfigParser::getValueFromKey('extensions_allowed'));
     }
 
     /**
@@ -70,14 +79,14 @@ abstract class LogParser implements LogParserInterface
     {
         $hosts = $this->getHosts();
         foreach ($hosts as $host) {
-            $file = new \SplFileObject($this->getLogFile());
-            $file->seek($this->getBeginLine());
-            for ($i = 0; !$file->eof() && $i < $this->getNumberOfLine(); $i++) {
-                $lineGlobal = $file->current();
-                $this->prepareOneTest($host, $lineGlobal);
-                $file->next();
+            $this->testConfiguration[$host] = [];
+        }
+        $file = new \SplFileObject($this->getLogFile());
+        $file->seek($this->getBeginLine());
+        for ($i = 0; !$file->eof() && $i < $this->getNumberOfLine(); $i++) {
+            $this->parseOneLine($file->current());
+            $file->next();
 
-            }
         }
         $this->generateAllTests();
     }
@@ -110,18 +119,15 @@ abstract class LogParser implements LogParserInterface
     /**
      * {@inheritDoc}
      */
-    public abstract function prepareOneTest($host, $line);
+    public abstract function parseOneLine($line);
 
     /**
      * {@inheritDoc}
      */
     public function addTestToConfiguration($host, $completePath)
     {
-        if (!isset($this->testConfiguration[$host])) {
-            $this->testConfiguration[$host] = [];
-        }
         if (!in_array($completePath, $this->testConfiguration[$host])) {
-            $this->testConfiguration[$host][] = $completePath;
+            $this->testConfiguration[$host][] = urlencode($completePath);
         }
     }
 
@@ -221,6 +227,22 @@ abstract class LogParser implements LogParserInterface
     public function setTestConfiguration($testConfiguration)
     {
         $this->testConfiguration = $testConfiguration;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExtensionsAllowed()
+    {
+        return $this->extensions_allowed;
+    }
+
+    /**
+     * @param array $extensions_allowed
+     */
+    public function setExtensionsAllowed($extensions_allowed)
+    {
+        $this->extensions_allowed = $extensions_allowed;
     }
 }
 
