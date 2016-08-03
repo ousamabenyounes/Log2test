@@ -7,6 +7,3 @@ use TwigGenerator\Builder\BaseBuilder;
 class TemplateBuilder extends BaseBuilder
 {
 }
-
-
-
