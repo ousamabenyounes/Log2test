@@ -4,6 +4,7 @@ namespace Log2Test;
 
 
 use TwigGenerator\Builder\Generator;
+use Log2Test\Utils;
 
 abstract class LogParser implements LogParserInterface
 {
@@ -81,10 +82,7 @@ abstract class LogParser implements LogParserInterface
     public function generateAllTests()
     {
         foreach ($this->getTestConfiguration() as $host => $paths) {
-            var_dump('eee');
-
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            var_dump($hostCleaned);
             $builder = new TemplateBuilder();
             $builder->setOutputName($hostCleaned . 'Test.php');
             //$builder->setTemplateName('TemplateBuilder2.php.twig');
