@@ -4,9 +4,54 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d147c4d7b3a3fe1aa8b549251f584b12",
-    "content-hash": "da49cc565874e8c55bdd502e644867fe",
+    "hash": "48863b9b9fa1cac2db7bef491e132de5",
+    "content-hash": "f698f242d22f96e28e7b577a95957162",
     "packages": [
+        {
+            "name": "cedriclombardot/twig-generator",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cedriclombardot/TwigGenerator.git",
+                "reference": "5029a5c6b894b413c79813389ae28ca6bda9ddc1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cedriclombardot/TwigGenerator/zipball/5029a5c6b894b413c79813389ae28ca6bda9ddc1",
+                "reference": "5029a5c6b894b413c79813389ae28ca6bda9ddc1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "twig/twig": ">=1.1, <2.0-dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "TwigGenerator": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cedric LOMBARDOT",
+                    "email": "cedric.lombardot@gmail.com"
+                },
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "A generator for PHP code based on Twig template engine",
+            "keywords": [
+                "code generation",
+                "generator",
+                "twig"
+            ],
+            "time": "2015-01-07 07:20:08"
+        },
         {
             "name": "incenteev/composer-parameter-handler",
             "version": "v2.1.2",

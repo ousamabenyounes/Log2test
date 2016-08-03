@@ -2,7 +2,8 @@
 
 namespace Log2Test;
 
-use Log2Test\LogParserInterface;
+
+use TwigGenerator\Builder\Generator;
 
 abstract class LogParser implements LogParserInterface
 {
@@ -36,12 +37,29 @@ abstract class LogParser implements LogParserInterface
     protected $numberOfLine;
 
 
+    /**
+     * list of host to keep from log file
+     *
+     * @var array
+     */
+    protected $browsers;
+
+    /**
+     * Global Test Configuration Array
+     * Contains all urls by host
+     *
+     * @var array
+     */
+    protected $testConfiguration = [];
+
+
     public function __construct()
     {
         $this->setLogFile(ConfigParser::getValueFromKey('logFile'));
         $this->setHosts(ConfigParser::getValueFromKey('hosts'));
         $this->setBeginLine(ConfigParser::getValueFromKey('beginLine'));
         $this->setNumberOfLine(ConfigParser::getValueFromKey('numberOfLine'));
+        $this->setBrowsers(ConfigParser::getValueFromKey('browsers'));
     }
 
     public function parse()
@@ -52,15 +70,56 @@ abstract class LogParser implements LogParserInterface
             $file->seek($this->getBeginLine());
             for ($i = 0; !$file->eof() && $i < $this->getNumberOfLine(); $i++) {
                 $lineGlobal = $file->current();
-                $this->generateOneTest($host, $lineGlobal);
+                $this->prepareOneTest($host, $lineGlobal);
                 $file->next();
 
             }
         }
+        $this->generateAllTests();
     }
 
-    public abstract function generateOneTest($host, $line);
+    public function generateAllTests()
+    {
+        foreach ($this->getTestConfiguration() as $host => $paths) {
+            var_dump('eee');
 
+            $hostCleaned = ucfirst(Utils::urlToString($host));
+            var_dump($hostCleaned);
+            $builder = new TemplateBuilder();
+            $builder->setOutputName($hostCleaned . 'Test.php');
+            //$builder->setTemplateName('TemplateBuilder2.php.twig');
+            $builder->setVariable('className', $hostCleaned . 'Test');
+            $generator = new Generator();
+            $generator->setTemplateDirs(array(
+                __DIR__ . '/../templates',
+            ));
+            $generator->setMustOverwriteIfExists(true);
+            $generator->setVariables(array(
+                'extends'       => 'PHPUnit_Extensions_SeleniumTestCase',
+                'host'          => $host,
+                'hostCleaned'   => $hostCleaned,
+                'paths'         => $paths,
+                'browsers'      => $this->getBrowsers()
+            ));
+            // add the builder to the generator
+            $generator->addBuilder($builder);
+            // You can add other builders here
+            // Run generation for all builders
+            $generator->writeOnDisk(__DIR__.'/../generated');
+        }
+    }
+
+    public abstract function prepareOneTest($host, $line);
+
+    public function addTestToConfiguration($host, $completePath)
+    {
+        if (!isset($this->testConfiguration[$host])) {
+            $this->testConfiguration[$host] = [];
+        }
+        if (!in_array($completePath, $this->testConfiguration[$host])) {
+            $this->testConfiguration[$host][] = $completePath;
+        }
+    }
 
     /********** GETTER AND SETTERS ************/
 
@@ -126,6 +185,38 @@ abstract class LogParser implements LogParserInterface
     public function setNumberOfLine($numberOfLine)
     {
         $this->numberOfLine = $numberOfLine;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBrowsers()
+    {
+        return $this->browsers;
+    }
+
+    /**
+     * @param array $browsers
+     */
+    public function setBrowsers($browsers)
+    {
+        $this->browsers = $browsers;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTestConfiguration()
+    {
+        return $this->testConfiguration;
+    }
+
+    /**
+     * @param array $testConfiguration
+     */
+    public function setTestConfiguration($testConfiguration)
+    {
+        $this->testConfiguration = $testConfiguration;
     }
 }
 

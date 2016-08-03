@@ -1,10 +1,14 @@
 parameters:
     #list of hosts you want to keep from your logs
     hosts:
-        - site1.com
-        - site2.com
+        - www.lacentrale.fr
     logFile: log/test.log
-    beginLine: 1
-    numberOfLine: 20
+    beginLine: 0
+    numberOfLine: 300
     logParserClass: \Log2Test\Apache2LogParser
-
+    exclude_extension:
+        - js
+        - jpg
+    browsers:
+        - '*firefox'
+        - '*chrome'

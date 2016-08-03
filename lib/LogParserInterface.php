@@ -20,7 +20,15 @@ interface LogParserInterface
      * @param string $host
      * @param string $line
      */
-    public function generateOneTest($host, $line);
+    public function prepareOneTest($host, $line);
 
+    /**
+     * Add a new test to the given host configuration
+     * This test will call the $completePath url on $host
+     *
+     * @param string $host
+     * @param string $completePath
+     */
+    public function addTestToConfiguration($host, $completePath);
 
 }

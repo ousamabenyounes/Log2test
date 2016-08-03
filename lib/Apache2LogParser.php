@@ -13,7 +13,7 @@ class Apache2LogParser extends LogParser
     /*
      * @inheritdoc
      */
-    public function generateOneTest($host, $line)
+    public function prepareOneTest($host, $line)
     {
     }
 }
