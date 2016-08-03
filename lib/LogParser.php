@@ -63,6 +63,9 @@ abstract class LogParser implements LogParserInterface
         $this->setBrowsers(ConfigParser::getValueFromKey('browsers'));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function parse()
     {
         $hosts = $this->getHosts();
@@ -79,13 +82,13 @@ abstract class LogParser implements LogParserInterface
         $this->generateAllTests();
     }
 
+
     public function generateAllTests()
     {
         foreach ($this->getTestConfiguration() as $host => $paths) {
             $hostCleaned = ucfirst(Utils::urlToString($host));
             $builder = new TemplateBuilder();
             $builder->setOutputName($hostCleaned . 'Test.php');
-            //$builder->setTemplateName('TemplateBuilder2.php.twig');
             $builder->setVariable('className', $hostCleaned . 'Test');
             $generator = new Generator();
             $generator->setTemplateDirs(array(
@@ -99,16 +102,19 @@ abstract class LogParser implements LogParserInterface
                 'paths'         => $paths,
                 'browsers'      => $this->getBrowsers()
             ));
-            // add the builder to the generator
             $generator->addBuilder($builder);
-            // You can add other builders here
-            // Run generation for all builders
             $generator->writeOnDisk(__DIR__.'/../generated');
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public abstract function prepareOneTest($host, $line);
 
+    /**
+     * {@inheritDoc}
+     */
     public function addTestToConfiguration($host, $completePath)
     {
         if (!isset($this->testConfiguration[$host])) {
