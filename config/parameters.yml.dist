@@ -11,3 +11,4 @@ parameters:
         - html
     browsers:
         - '*chrome'
+    removeDuplicateUrl: false
