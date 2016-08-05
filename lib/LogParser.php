@@ -97,9 +97,6 @@ abstract class LogParser implements LogParserInterface
         $this->setBrowsers($configParser->getValueFromKey('browsers'));
         $this->setExtensionsAllowed($configParser->getValueFromKey('extensions_allowed'));
         $this->setRemoveDuplicateUrl($configParser->getValueFromKey('removeDuplicateUrl'));
-
-        $currentConfiguration = Yaml::parse(file_get_contents(Constants::TEST_CONFIGURATION_FILE));
-
     }
 
     public function getCurrentConfiguration()
