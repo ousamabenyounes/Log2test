@@ -2,7 +2,6 @@
 
 namespace Log2Test;
 
-
 class LogParserFactory
 {
 
@@ -13,9 +12,10 @@ class LogParserFactory
      */
     public static function create()
     {
-        $logParserClass = ConfigParser::getValueFromKey('logParserClass');
+        $configParser = new ConfigParser();
+        $logParserClass = $configParser->getValueFromKey('logParserClass');
 
-        return new $logParserClass;
+        return new $logParserClass($configParser);
     }
 
 }
