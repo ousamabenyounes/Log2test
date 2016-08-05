@@ -3,7 +3,6 @@
 namespace Log2Test;
 
 
-use Symfony\Component\Yaml\Yaml;
 use TwigGenerator\Builder\Generator;
 use Log2Test\Utils;
 
