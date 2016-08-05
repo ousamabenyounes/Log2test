@@ -1,6 +1,11 @@
 <?php
 {{ namespace is defined ? "namespace " ~ namespace ~ ";" : "" }}
 
+/**
+ * PhpUnit / Selenium Tests generated from log file -> {{ logFile }}
+ * From Line {{ beginLine }} To Line {{ endLine }}
+*/
+
 class {{ className }} {{ extends is defined ? "extends " ~ extends : "" }}
 {
 

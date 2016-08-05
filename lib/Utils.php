@@ -3,6 +3,8 @@
 namespace Log2Test;
 
 
+use Symfony\Component\Yaml\Yaml;
+
 class Utils
 {
     /**
@@ -50,4 +52,30 @@ class Utils
 
         return null;
     }
+
+    /**
+     * Save the given content to a yaml file
+     *
+     * @param $file
+     * @param $content
+     */
+    public static function saveYamlContent($file, $content)
+    {
+        $yaml = Yaml::dump($content);
+        file_put_contents($file, $yaml);
+    }
+
+    /**
+     * Create a Directory
+     *
+     * @param $path
+     * @return bool
+     */
+    public static function createDir($path)
+    {
+        if (!file_exists($path)) {
+            return mkdir($path);
+        }
+    }
+
 }

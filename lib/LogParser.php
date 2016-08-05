@@ -3,6 +3,7 @@
 namespace Log2Test;
 
 
+use Symfony\Component\Yaml\Yaml;
 use TwigGenerator\Builder\Generator;
 use Log2Test\Utils;
 
@@ -31,12 +32,18 @@ abstract class LogParser implements LogParserInterface
     protected $beginLine;
 
     /**
+     * Ending parsing at Line X
+     *
+     * @var int
+     */
+    protected $endLine;
+
+    /**
      * Number of line to parse
      *
      * @var int
      */
     protected $numberOfLine;
-
 
     /**
      * list of host to keep from log file
@@ -52,7 +59,6 @@ abstract class LogParser implements LogParserInterface
      */
     protected $extensions_allowed;
 
-
     /**
      * Global Test Configuration Array
      * Contains all urls by host
@@ -61,15 +67,44 @@ abstract class LogParser implements LogParserInterface
      */
     protected $testConfiguration = [];
 
+    /**
+     * Remove duplicate url from tests
+     *
+     * @var boolean
+     */
+    protected $removeDuplicateUrl;
 
-    public function __construct()
+
+    /**
+     * Current ConfigParser Object
+     *
+     * @var ConfigParser
+     */
+    protected $configParser;
+
+    /**
+     * LogParser constructor.
+     * @param ConfigParser $configParser
+     */
+    public function __construct(ConfigParser $configParser)
     {
-        $this->setLogFile(ConfigParser::getValueFromKey('logFile'));
-        $this->setHosts(ConfigParser::getValueFromKey('hosts'));
-        $this->setBeginLine(ConfigParser::getValueFromKey('beginLine'));
-        $this->setNumberOfLine(ConfigParser::getValueFromKey('numberOfLine'));
-        $this->setBrowsers(ConfigParser::getValueFromKey('browsers'));
-        $this->setExtensionsAllowed(ConfigParser::getValueFromKey('extensions_allowed'));
+        $this->setConfigParser($configParser);
+        $this->setLogFile($configParser->getValueFromKey('logFile'));
+        $this->setHosts($configParser->getValueFromKey('hosts'));
+        $this->setNumberOfLine($configParser->getValueFromKey('numberOfLine'));
+        $this->setBeginLine($configParser->getValueFromKey(Constants::BEGIN_LINE));
+        $this->setEndLine($this->getBeginLine() + $this->getNumberOfLine());
+        $this->setBrowsers($configParser->getValueFromKey('browsers'));
+        $this->setExtensionsAllowed($configParser->getValueFromKey('extensions_allowed'));
+        $this->setRemoveDuplicateUrl($configParser->getValueFromKey('removeDuplicateUrl'));
+
+        $currentConfiguration = Yaml::parse(file_get_contents(Constants::TEST_CONFIGURATION_FILE));
+
+    }
+
+    public function getCurrentConfiguration()
+    {
+
     }
 
     /**
@@ -86,33 +121,43 @@ abstract class LogParser implements LogParserInterface
         for ($i = 0; !$file->eof() && $i < $this->getNumberOfLine(); $i++) {
             $this->parseOneLine($file->current());
             $file->next();
-
         }
-        $this->generateAllTests();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public function generateAllTests()
     {
+        $currentPath = __DIR__ . '/../';
         foreach ($this->getTestConfiguration() as $host => $paths) {
-            $hostCleaned = ucfirst(Utils::urlToString($host));
-            $builder = new TemplateBuilder();
-            $builder->setOutputName($hostCleaned . 'Test.php');
-            $builder->setVariable('className', $hostCleaned . 'Test');
-            $generator = new Generator();
-            $generator->setTemplateDirs(array(
-                __DIR__ . '/../templates',
-            ));
-            $generator->setMustOverwriteIfExists(true);
-            $generator->setVariables(array(
-                'extends'       => 'PHPUnit_Extensions_SeleniumTestCase',
-                'host'          => $host,
-                'hostCleaned'   => $hostCleaned,
-                'paths'         => $paths,
-                'browsers'      => $this->getBrowsers()
-            ));
-            $generator->addBuilder($builder);
-            $generator->writeOnDisk(__DIR__.'/../generated');
+            if (0 !== sizeof($paths)) {
+                $hostCleaned = ucfirst(Utils::urlToString($host));
+                $hostDirectory = $currentPath .'generated/' . $hostCleaned;
+                Utils::createDir($hostDirectory);
+                $builder = new TemplateBuilder();
+                $className = $hostCleaned . 'From' . $this->getBeginLine() . 'To' . $this->getEndLine() . 'Test';
+                $builder->setOutputName($className . '.php');
+                $builder->setVariable('className', $className);
+                $generator = new Generator();
+                $generator->setTemplateDirs(array(
+                    $currentPath . 'templates',
+                ));
+                $generator->setMustOverwriteIfExists(true);
+                $generator->setVariables(array(
+                    'extends'       => 'PHPUnit_Extensions_SeleniumTestCase',
+                    'host'          => $host,
+                    'beginLine'     => $this->getBeginLine(),
+                    'endLine'       => $this->getEndLine(),
+                    'numberOfLine'  => $host,
+                    'hostCleaned'   => $hostCleaned,
+                    'paths'         => $paths,
+                    'browsers'      => $this->getBrowsers(),
+                    'logFile'       => $this->getLogFile()
+                ));
+                $generator->addBuilder($builder);
+                $generator->writeOnDisk($hostDirectory);
+            }
         }
     }
 
@@ -126,9 +171,21 @@ abstract class LogParser implements LogParserInterface
      */
     public function addTestToConfiguration($host, $completePath)
     {
-        if (!in_array($completePath, $this->testConfiguration[$host])) {
-            $this->testConfiguration[$host][] = urlencode($completePath);
+        $completePathEncoded = urlencode($completePath);
+        if (false === $this->isRemoveDuplicateUrl() ||
+            !in_array($completePathEncoded, $this->testConfiguration[$host])) {
+            $this->testConfiguration[$host][] = $completePathEncoded;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function saveTestConfiguration()
+    {
+        $configParser = $this->getConfigParser();
+        $newBeginLine = $this->getBeginLine() + $this->getNumberOfLine();
+        $configParser->updateConfigurationValue(Constants::BEGIN_LINE, $newBeginLine);
     }
 
     /********** GETTER AND SETTERS ************/
@@ -179,6 +236,22 @@ abstract class LogParser implements LogParserInterface
     public function setBeginLine($beginLine)
     {
         $this->beginLine = $beginLine;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEndLine()
+    {
+        return $this->endLine;
+    }
+
+    /**
+     * @param int $endLine
+     */
+    public function setEndLine($endLine)
+    {
+        $this->endLine = $endLine;
     }
 
     /**
@@ -243,6 +316,38 @@ abstract class LogParser implements LogParserInterface
     public function setExtensionsAllowed($extensions_allowed)
     {
         $this->extensions_allowed = $extensions_allowed;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRemoveDuplicateUrl()
+    {
+        return $this->removeDuplicateUrl;
+    }
+
+    /**
+     * @param boolean $removeDuplicateUrl
+     */
+    public function setRemoveDuplicateUrl($removeDuplicateUrl)
+    {
+        $this->removeDuplicateUrl = $removeDuplicateUrl;
+    }
+
+    /**
+     * @return ConfigParser
+     */
+    public function getConfigParser()
+    {
+        return $this->configParser;
+    }
+
+    /**
+     * @param ConfigParser $configParser
+     */
+    public function setConfigParser($configParser)
+    {
+        $this->configParser = $configParser;
     }
 }
 
