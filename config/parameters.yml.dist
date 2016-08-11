@@ -6,6 +6,7 @@ parameters:
     beginLine: 0
     numberOfLine: 300
     logParserClass: \Log2Test\CbmLogParser
+    logFormat: '%h %l %u %t \"%r\" %>s %b'
     extensions_allowed:
         - php
         - html

@@ -37,14 +37,13 @@ class Utils
      */
     public static function contains($str, array $values, $addSpaces = false)
     {
-        foreach($values as $value) {
+        foreach ($values as $value) {
             if (true === $addSpaces) {
-                if (stripos($str, Constants::SPACE_CHAR . $value . Constants::SPACE_CHAR) !== false) {
+                if (stripos($str, Constants::SPACE_CHAR . $value . Constants::SPACE_CHAR . Constants::METHOD_GET) !== false) {
 
                     return $value;
                 }
-            } else
-            if (stripos($str, $value) !== false) {
+            } elseif (stripos($str, $value) !== false) {
 
                 return $value;
             }
