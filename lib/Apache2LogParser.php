@@ -42,9 +42,10 @@ class Apache2LogParser extends LogParser
             in_array($parsedLine->host, $this->getHosts())) {
             $requestConfig = explode(Constants::SPACE_CHAR, $parsedLine->request);
             $path = $requestConfig[Constants::REQUEST_PATH];
+            $method = $requestConfig[Constants::REQUEST_METHOD];
             $parsedUrl = parse_url($path);
             $extension = pathinfo($parsedUrl['path'], PATHINFO_EXTENSION);
-            if (in_array($extension, $this->getExtensionsAllowed()))
+            if (Constants::METHOD_GET === $method && in_array($extension, $this->getExtensionsAllowed()))
             {
                 $this->addTestToConfiguration($parsedLine->host, $path);
             }
