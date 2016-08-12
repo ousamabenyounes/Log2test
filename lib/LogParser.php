@@ -82,6 +82,22 @@ abstract class LogParser implements LogParserInterface
     protected $configParser;
 
     /**
+     * Pause between each tests
+     * Number of second
+     *
+     * @var int
+     */
+    protected $pauseBetweenTests;
+
+    /**
+     * Encode tested urls
+     *
+     * @var boolean
+     */
+    protected $encodedUrls;
+
+
+    /**
      * LogParser constructor.
      * @param ConfigParser $configParser
      */
@@ -96,6 +112,8 @@ abstract class LogParser implements LogParserInterface
         $this->setBrowsers($configParser->getValueFromKey('browsers'));
         $this->setExtensionsAllowed($configParser->getValueFromKey('extensions_allowed'));
         $this->setRemoveDuplicateUrl($configParser->getValueFromKey('removeDuplicateUrl'));
+        $this->setPauseBetweenTests($configParser->getValueFromKey('pauseBetweenTests'));
+        $this->setEncodedUrls($configParser->getValueFromKey('encodedUrls'));
     }
 
     public function getCurrentConfiguration()
@@ -141,15 +159,16 @@ abstract class LogParser implements LogParserInterface
                 ));
                 $generator->setMustOverwriteIfExists(true);
                 $generator->setVariables(array(
-                    'extends'       => 'PHPUnit_Extensions_SeleniumTestCase',
-                    'host'          => $host,
-                    'beginLine'     => $this->getBeginLine(),
-                    'endLine'       => $this->getEndLine(),
-                    'numberOfLine'  => $host,
-                    'hostCleaned'   => $hostCleaned,
-                    'paths'         => $paths,
-                    'browsers'      => $this->getBrowsers(),
-                    'logFile'       => $this->getLogFile()
+                    'extends'           => 'PHPUnit_Extensions_Selenium2TestCase',
+                    'host'              => $host,
+                    'beginLine'         => $this->getBeginLine(),
+                    'endLine'           => $this->getEndLine(),
+                    'numberOfLine'      => $host,
+                    'hostCleaned'       => $hostCleaned,
+                    'paths'             => $paths,
+                    'browsers'          => $this->getBrowsers(),
+                    'logFile'           => $this->getLogFile(),
+                    'pauseBetweenTests' => $this->getPauseBetweenTests(),
                 ));
                 $generator->addBuilder($builder);
                 $generator->writeOnDisk($hostDirectory);
@@ -167,7 +186,7 @@ abstract class LogParser implements LogParserInterface
      */
     public function addTestToConfiguration($host, $completePath)
     {
-        $completePathEncoded = urlencode($completePath);
+        $completePathEncoded = (true === $this->isEncodedUrls() ?  urlencode($completePath) : $completePath);
         if (false === $this->isRemoveDuplicateUrl() ||
             !in_array($completePathEncoded, $this->testConfiguration[$host])) {
             $this->testConfiguration[$host][] = $completePathEncoded;
@@ -344,6 +363,38 @@ abstract class LogParser implements LogParserInterface
     public function setConfigParser($configParser)
     {
         $this->configParser = $configParser;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPauseBetweenTests()
+    {
+        return $this->pauseBetweenTests;
+    }
+
+    /**
+     * @param int $pauseBetweenTests
+     */
+    public function setPauseBetweenTests($pauseBetweenTests)
+    {
+        $this->pauseBetweenTests = $pauseBetweenTests;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isEncodedUrls()
+    {
+        return $this->encodedUrls;
+    }
+
+    /**
+     * @param boolean $encodedUrls
+     */
+    public function setEncodedUrls($encodedUrls)
+    {
+        $this->encodedUrls = $encodedUrls;
     }
 }
 

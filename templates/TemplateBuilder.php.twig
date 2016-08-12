@@ -4,7 +4,10 @@
     public function testAllUrls()
     {
 {% for path in paths %}
-            $this->open('{{ path }}');
+            $this->url('{{ path }}');{% if  pauseBetweenTests > 0 %}
+
+            sleep({{ pauseBetweenTests }});
+{% endif %}
 {% endfor %}
     }
 {% endblock %}

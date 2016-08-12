@@ -13,3 +13,6 @@ parameters:
     browsers:
         - '*chrome'
     removeDuplicateUrl: false
+    #Pause Between each tests in seconds
+    pauseBetweenTests: 5
+    encodedUrls: true
