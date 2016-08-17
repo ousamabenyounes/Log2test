@@ -1,13 +1,31 @@
 {% extends "base/common.php.twig" %}
 
 {% block functions %}
-    public function testAllUrls()
+
+
+{% for path in paths %}{% set pathHashed = pathsHashed[loop.index0] %}
+    public function test{{ pathHashed }}()
     {
-{% for path in paths %}
             $this->url('{{ path }}');{% if  pauseBetweenTests > 0 %}
 
             sleep({{ pauseBetweenTests }});
 {% endif %}
-{% endfor %}
+{% if true == enabledScreenshot %}
+            $this->screenshot('{{ pathHashed }}');
+{% endif %}
     }
+
+{% endfor %}
+
+{% if true == enabledScreenshot %}
+    /**
+    * Take a screenshot
+    * @param string $filename
+    */
+    public function screenshot($filename) {
+        $filedata = $this->currentScreenshot();
+
+        file_put_contents('sceenshots/' . $filepath, $filedata);
+    }
+{% endif %}
 {% endblock %}

@@ -16,3 +16,4 @@ parameters:
     #Pause Between each tests in seconds
     pauseBetweenTests: 5
     encodedUrls: true
+    enabledScreenshot: true

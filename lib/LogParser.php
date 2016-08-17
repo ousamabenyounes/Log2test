@@ -96,6 +96,12 @@ abstract class LogParser implements LogParserInterface
      */
     protected $encodedUrls;
 
+    /**
+     * ScreenShot enabled on all tests
+     *
+     * @var boolean
+     */
+    protected $enabledScreenshot;
 
     /**
      * LogParser constructor.
@@ -114,6 +120,7 @@ abstract class LogParser implements LogParserInterface
         $this->setRemoveDuplicateUrl($configParser->getValueFromKey('removeDuplicateUrl'));
         $this->setPauseBetweenTests($configParser->getValueFromKey('pauseBetweenTests'));
         $this->setEncodedUrls($configParser->getValueFromKey('encodedUrls'));
+        $this->setEnabledScreenshot($configParser->getValueFromKey('enabledScreenshot'));
     }
 
     public function getCurrentConfiguration()
@@ -159,16 +166,18 @@ abstract class LogParser implements LogParserInterface
                 ));
                 $generator->setMustOverwriteIfExists(true);
                 $generator->setVariables(array(
-                    'extends'           => 'PHPUnit_Extensions_Selenium2TestCase',
+                    'extends'           => 'BaseTest',
                     'host'              => $host,
                     'beginLine'         => $this->getBeginLine(),
                     'endLine'           => $this->getEndLine(),
                     'numberOfLine'      => $host,
                     'hostCleaned'       => $hostCleaned,
                     'paths'             => $paths,
+                    'pathsHashed'       => array_map('md5', $paths),
                     'browsers'          => $this->getBrowsers(),
                     'logFile'           => $this->getLogFile(),
                     'pauseBetweenTests' => $this->getPauseBetweenTests(),
+                    'enabledScreenshot' => $this->isEnabledScreenshot(),
                 ));
                 $generator->addBuilder($builder);
                 $generator->writeOnDisk($hostDirectory);
@@ -187,8 +196,7 @@ abstract class LogParser implements LogParserInterface
     public function addTestToConfiguration($host, $completePath)
     {
         $completePathEncoded = (true === $this->isEncodedUrls() ?  urlencode($completePath) : $completePath);
-        if (false === $this->isRemoveDuplicateUrl() ||
-            !in_array($completePathEncoded, $this->testConfiguration[$host])) {
+        if (!in_array($completePathEncoded, $this->testConfiguration[$host])) {
             $this->testConfiguration[$host][] = $completePathEncoded;
         }
     }
@@ -396,6 +404,23 @@ abstract class LogParser implements LogParserInterface
     {
         $this->encodedUrls = $encodedUrls;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isEnabledScreenshot()
+    {
+        return $this->enabledScreenshot;
+    }
+
+    /**
+     * @param boolean $enabledScreenshot
+     */
+    public function setEnabledScreenshot($enabledScreenshot)
+    {
+        $this->enabledScreenshot = $enabledScreenshot;
+    }
+
 }
 
 
