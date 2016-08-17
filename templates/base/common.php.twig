@@ -1,6 +1,8 @@
 <?php
 {{ namespace is defined ? "namespace " ~ namespace ~ ";" : "" }}
 
+require('../BaseTest.php');
+
 /**
  * PhpUnit / Selenium Tests generated from log file -> {{ logFile }}
  * From Line {{ beginLine }} To Line {{ endLine }}
@@ -20,6 +22,8 @@ class {{ className }} {{ extends is defined ? "extends " ~ extends : "" }}
     protected function setUp()
     {
         $this->setBrowserUrl('{{ host }}');
+        $this->setClassName('{{ className }}');
+        $this->createDir('screenshots/{{ className }}');
     }
 
 {% block functions %}
