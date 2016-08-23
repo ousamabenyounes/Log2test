@@ -4,7 +4,7 @@
 
 
 {% for path in paths %}{% set pathHashed = pathsHashed[loop.index0] %}
-    public function test{{ pathHashed }}()
+    public function test{{ className | ucfirst }}{{ loop.index }}()
     {
             $this->url('{{ path }}');{% if  pauseBetweenTests > 0 %}
 
