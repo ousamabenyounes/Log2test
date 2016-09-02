@@ -12,8 +12,8 @@ Phpunit
 Selenium Server
 
 # Todo
-Multi Curl template for API calls & Better performances 
-Add screenshot thumbnail 
-Add YellowLabTool option on parsing
-Documentation
+Multi Curl template for API calls & Better performances  
+Add screenshot thumbnail  
+Add YellowLabTool option on parsing  
+Documentation  
 
