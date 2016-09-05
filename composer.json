@@ -6,7 +6,9 @@
         "kassner/log-parser": "~1.0",
         "symfony/yaml": "^3.1",
         "incenteev/composer-parameter-handler": "~2.0",
-        "cedriclombardot/twig-generator": "^1.1"
+        "cedriclombardot/twig-generator": "^1.1",
+        "jasny/twig-extensions": "^1.0",
+        "jmathai/php-multi-curl": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

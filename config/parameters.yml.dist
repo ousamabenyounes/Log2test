@@ -3,6 +3,7 @@ parameters:
     hosts:
         - www.epitech.fr
     logFile: log/test.log
+    testStack: selenium
     beginLine: 0
     numberOfLine: 300
     logParserClass: \Log2Test\Apache2LogParser
