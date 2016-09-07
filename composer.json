@@ -7,8 +7,7 @@
         "symfony/yaml": "^3.1",
         "incenteev/composer-parameter-handler": "~2.0",
         "cedriclombardot/twig-generator": "^1.1",
-        "jasny/twig-extensions": "^1.0",
-        "jmathai/php-multi-curl": "dev-master"
+        "jasny/twig-extensions": "^1.0"
     },
     "scripts": {
         "post-install-cmd": [
