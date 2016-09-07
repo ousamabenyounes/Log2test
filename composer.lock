@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "effcbc7041121b4b499af450b030e091",
-    "content-hash": "7d85fd025205e5ab1dccc4c0f6fe9209",
+    "hash": "d61b08f204d995ca16bfcb1b5aa35974",
+    "content-hash": "4b9b87374ea3d6f167a716e223f62d5f",
     "packages": [
         {
             "name": "cedriclombardot/twig-generator",
@@ -156,42 +156,6 @@
                 "time"
             ],
             "time": "2015-12-09 03:46:22"
-        },
-        {
-            "name": "jmathai/php-multi-curl",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jmathai/php-multi-curl.git",
-                "reference": "86e979e6a05f49fb055d9c2f287dece817e4c518"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jmathai/php-multi-curl/zipball/86e979e6a05f49fb055d9c2f287dece817e4c518",
-                "reference": "86e979e6a05f49fb055d9c2f287dece817e4c518",
-                "shasum": ""
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.0.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "JMathai\\PhpMultiCurl\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache"
-            ],
-            "description": "A high performance PHP library for asynchronous curl http calls.",
-            "keywords": [
-                "asynchronous",
-                "curl",
-                "parallel",
-                "php-multi-curl"
-            ],
-            "time": "2016-07-01 05:06:45"
         },
         {
             "name": "kassner/log-parser",
@@ -360,9 +324,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "jmathai/php-multi-curl": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
