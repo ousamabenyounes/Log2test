@@ -1,0 +1,41 @@
+<?php
+{{ namespace is defined ? "namespace " ~ namespace ~ ";" : "" }}
+
+require('../BaseTest.php');
+
+/**
+ * Simple Php Curl Tests generated from log file -> {{ logFile }}
+ * From Line {{ beginLine }} To Line {{ endLine }}
+*/
+
+class {{ className }} {{ extends is defined ? "extends " ~ extends : "" }}
+{
+    /**
+     * @var string
+     */
+    protected $host;
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param string $host
+     */
+    public function setHost($host)
+    {
+        $this->host = $host;
+    }
+
+    public function __construct()
+    {
+        $this->setHost('{{ host }}');
+    }
+
+{% block functions %}
+{% endblock %}
+}
