@@ -4,14 +4,15 @@
 
 
 {% for path in paths %}{% set pathHashed = pathsHashed[loop.index0] %}
-    public function test{{ className | ucfirst }}{{ loop.index }}()
+    public function test{{ className | ucfirst }}Url{{ loop.index }}()
     {
-            $this->url('{{ path }}');{% if  pauseBetweenTests > 0 %}
+            $this->curlCall($this->getHost() . '{{ path }}');{% if  pauseBetweenTests > 0 %}
 
             sleep({{ pauseBetweenTests }});
 {% endif %}
 {% if true == enabledScreenshot %}
-            $this->screenshot('{{ pathHashed }}');
+
+            // TODO take screenshot with pageres?
 {% endif %}
     }
 

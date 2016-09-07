@@ -17,6 +17,13 @@ abstract class LogParser implements LogParserInterface
     protected $logFile;
 
     /**
+     * testStack => can be Selenium or Curl
+     *
+     * @var string
+     */
+    protected $testStack;
+
+    /**
      * list of host to keep from log file
      *
      * @var array
@@ -111,6 +118,7 @@ abstract class LogParser implements LogParserInterface
     {
         $this->setConfigParser($configParser);
         $this->setLogFile($configParser->getValueFromKey('logFile'));
+        $this->setTestStack($configParser->getValueFromKey('testStack'));
         $this->setHosts($configParser->getValueFromKey('hosts'));
         $this->setNumberOfLine($configParser->getValueFromKey('numberOfLine'));
         $this->setBeginLine($configParser->getValueFromKey(Constants::BEGIN_LINE));
@@ -154,7 +162,7 @@ abstract class LogParser implements LogParserInterface
         foreach ($this->getTestConfiguration() as $host => $paths) {
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
-                $hostDirectory = $currentPath .'generated/' . $hostCleaned;
+                $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
                 Utils::createDir($hostDirectory);
                 $builder = new TemplateBuilder();
                 $className = $hostCleaned . 'From' . $this->getBeginLine() . 'To' . $this->getEndLine() . 'Test';
@@ -162,7 +170,7 @@ abstract class LogParser implements LogParserInterface
                 $builder->setVariable('className', $className);
                 $generator = new Generator();
                 $generator->setTemplateDirs(array(
-                    $currentPath . 'templates',
+                    $currentPath . 'templates/' . $this->getTestStack(),
                 ));
                 $generator->setMustOverwriteIfExists(true);
                 $generator->setVariables(array(
@@ -228,6 +236,23 @@ abstract class LogParser implements LogParserInterface
     {
         $this->logFile = $logFile;
     }
+
+    /**
+     * @return string
+     */
+    public function getTestStack()
+    {
+        return $this->testStack;
+    }
+
+    /**
+     * @param string $testStack
+     */
+    public function setTestStack($testStack)
+    {
+        $this->testStack = $testStack;
+    }
+
 
     /**
      * @return array
