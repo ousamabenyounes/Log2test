@@ -1,7 +1,7 @@
 <?php
 
 
-class BaseTest extends PHPUnit_Extensions_SeleniumTestCase
+class PhpunitSeleniumTest extends PHPUnit_Extensions_SeleniumTestCase
 {
     /**
      * Current Class Name
