@@ -11,11 +11,9 @@
             sleep({{ pauseBetweenTests }});
 {% endif %}
 {% if true == enabledScreenshot %}
-
             // Here take screenshot with pageres?
 {% endif %}
     }
-
 {% endfor %}
 
 {% if true == enabledScreenshot %}
@@ -24,9 +22,7 @@
     * @param string $filename
     */
     public function screenshot($filename) {
-        $filedata = $this->currentScreenshot();
-
-        file_put_contents('sceenshots/' . $filepath, $filedata);
+        // implements
     }
 {% endif %}
 {% endblock %}

@@ -6,8 +6,8 @@
 {% for path in paths %}{% set pathHashed = pathsHashed[loop.index0] %}
     public function test{{ className | ucfirst }}Url{{ loop.index }}()
     {
-            $this->url('{{ path }}');{% if  pauseBetweenTests > 0 %}
-
+            $this->url('{{ path }}');
+{% if  pauseBetweenTests > 0 %}
             sleep({{ pauseBetweenTests }});
 {% endif %}
 {% if true == enabledScreenshot %}
@@ -16,7 +16,6 @@
     }
 
 {% endfor %}
-
 {% if true == enabledScreenshot %}
     /**
     * Take a screenshot

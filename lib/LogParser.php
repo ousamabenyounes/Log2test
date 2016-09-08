@@ -174,7 +174,6 @@ abstract class LogParser implements LogParserInterface
                 ));
                 $generator->setMustOverwriteIfExists(true);
                 $generator->setVariables(array(
-                    'extends'           => 'BaseTest',
                     'host'              => $host,
                     'beginLine'         => $this->getBeginLine(),
                     'endLine'           => $this->getEndLine(),
