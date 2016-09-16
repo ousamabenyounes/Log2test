@@ -2,7 +2,7 @@
 
 namespace Log2Test;
 
-class PhpunitSeleniumTest extends PHPUnit_Extensions_SeleniumTestCase
+class PhpunitSeleniumTest extends \PHPUnit_Extensions_SeleniumTestCase
 {
     use \ClassInfo;
 
