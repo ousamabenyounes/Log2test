@@ -28,5 +28,8 @@
         "psr-4" : {
             "Log2Test\\" : "lib/"
         }
+    },
+    "config":  {
+        "bin-dir" : "bin/"
     }
 }

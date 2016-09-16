@@ -1,7 +1,12 @@
 <?php
-{{ namespace is defined ? "namespace " ~ namespace ~ ";" : "" }}
 
-require('../../CurlTest.php');
+namespace Log2Test;
+
+require_once('vendor/autoload.php');
+
+
+use Log2Test\CurlTest;
+
 
 /**
  * Simple Php Curl Tests generated from log file -> {{ logFile }}
