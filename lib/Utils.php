@@ -5,7 +5,7 @@ namespace Log2Test;
 
 use Symfony\Component\Yaml\Yaml;
 
-class Utils
+trait Utils
 {
     /**
      * This function convert an url to a cleaned String (without http:// www. ...)
@@ -76,5 +76,4 @@ class Utils
             return mkdir($path);
         }
     }
-
 }
