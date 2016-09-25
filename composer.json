@@ -23,7 +23,7 @@
     },
     "extra": {
         "incenteev-parameters": {
-            "file": "config/parameters.yml"
+            "file": "config/parameters-log2test.yml"
         }
     },
 

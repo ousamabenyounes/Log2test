@@ -6,7 +6,7 @@ final class Constants
     /*
      * Parameter File path
      */
-    const PARAMETER_FILE = 'config/parameters.yml';
+    const PARAMETER_FILE = 'config/parameters-log2test.yml';
 
     /*
      * Tests configuration File path
@@ -49,8 +49,8 @@ final class Constants
     const REQUEST_HTTP_VERSION = 2;
 
 
-    const PARAMETER_FILE_FROM_VENDOR = 'vendor/ousamabenyounes/log2test/config/parameters.yml.dist';
-    const PARAMETER_FILE_TO = 'config/parameters.yml.dist';
+    const PARAMETER_FILE_FROM_VENDOR = 'vendor/ousamabenyounes/log2test/config/parameters-log2test.yml.dist';
+    const PARAMETER_FILE_TO = 'config/parameters-log2test.yml.dist';
 
     const CONFIG_PATH = 'config';
     const TESTS_GLOBAL_PATH = 'generated';
