@@ -8,13 +8,16 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "cedriclombardot/twig-generator": "^1.1",
         "jasny/twig-extensions": "^1.0",
-        "phpunit/phpunit": "5.5.*"
+        "phpunit/phpunit": "5.5.*",
+        "symfony/filesystem": "^3.1"
     },
     "scripts": {
         "post-install-cmd": [
+            "Log2Test\\Installer::postInstall",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
         ],
         "post-update-cmd": [
+            "Log2Test\\Installer::postInstall",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
         ]
     },
