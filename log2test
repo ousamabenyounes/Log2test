@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+/*
+ * This file is part of Log2Test Project.
+ *
+ * (c) Ousama Ben Younes <benyounes.ousama@gmail.com>
+ *
+ */
+
+namespace Log2Test;
+
+require_once('vendor/autoload.php');
+
+$logParser = LogParserFactory::create();
+$logParser->parse();
+$logParser->generateAllTests();
+$logParser->saveTestConfiguration();
