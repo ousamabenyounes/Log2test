@@ -148,7 +148,10 @@ abstract class LogParser implements LogParserInterface
         $file = new \SplFileObject($this->getLogFile());
         $file->seek($this->getBeginLine());
         for ($i = 0; !$file->eof() && $i < $this->getNumberOfLine(); $i++) {
-            $this->parseOneLine($file->current());
+            $line = $file->current();
+            if ('' !== trim($line)){
+                $this->parseOneLine($file->current());
+            }
             $file->next();
         }
     }
@@ -163,7 +166,7 @@ abstract class LogParser implements LogParserInterface
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
                 $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
-                Utils::createDir($hostDirectory);
+                Utils::createDir($hostDirectory, true);
                 $builder = new TemplateBuilder();
                 $className = $hostCleaned . 'From' . $this->getBeginLine() . 'To' . $this->getEndLine() . 'Test';
                 $builder->setOutputName($className . '.php');
@@ -187,7 +190,7 @@ abstract class LogParser implements LogParserInterface
                     'enabledScreenshot' => $this->isEnabledScreenshot(),
                 ));
                 $generator->addBuilder($builder);
-                $generator->writeOnDisk($hostDirectory);
+                $generator->writeOnDisk($hostDirectory, true);
             }
         }
     }

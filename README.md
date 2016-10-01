@@ -12,18 +12,14 @@ Why exporting your log production's files to tests?
 
 
 
-**Let's now see how Log2Test works throw 3 steps (see the gif Animation bellow)**
+**Let's now see how Log2Test works throw step by step as seen on screencast gif file bellow**
 - 1) At the beginning, no existing test on generated/curl directory
-- 2) Given a configuration file (Yaml File)  
-- 3) Given an Apache2 Access Log file  
-- 4) Then Log2Tests generates all your curl tests  
-- 5) Launch your curl tests now
-
-
-
+- 2) Given a configuration file (Yaml File) -> config/parameters-log2test.yml   
+- 3) Given an Apache2 Access Log file -> log/test.log   
+- 4) Then Log2Tests generates all your curl tests -> run ./bin/log2test  
+- 5) Launch your curl tests now -> run ./bin/phpunit -c phpunit-curl.xml  
 
 <img src="web/img/log2testCurl.gif"></img>
-
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/d9e3c01e-7bea-4705-8b0b-f6273dac5b09/big.png)](https://insight.sensiolabs.com/projects/d9e3c01e-7bea-4705-8b0b-f6273dac5b09)
 
@@ -73,7 +69,8 @@ Selenium Server (only needed if you choose phpunit_selenium for your test stack)
 
 # Todo
 Add screenshot thumbnail  
-Add Global Reporting
+Add Global Reporting  
+Add phpunit tests to test log2test project  
 Add YellowLabTool option on parsing  
   
 

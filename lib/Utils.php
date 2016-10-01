@@ -67,13 +67,19 @@ trait Utils
     /**
      * Create a Directory
      *
-     * @param $path
+     * @param string $path
+     * @param bool   $info
+     *
      * @return bool
      */
-    public static function createDir($path)
+    public static function createDir($path, $info = false)
     {
         if (!file_exists($path)) {
-            return mkdir($path);
+            $createdDir = mkdir($path);
+            if (true === $createdDir) {
+                print '[INFO] Created directory: "' . $path . '"' . PHP_EOL;
+            }
+            return $createdDir;
         }
     }
 }
