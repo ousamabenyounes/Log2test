@@ -1,8 +1,26 @@
 {
     "name": "ousamabenyounes/log2test",
-    "description": "Transorm your production logs to simple selenium/phpunit tests...",
+    "description": "Transorm your Apache2 Access log files to simple curl or selenium/phpunit tests...",
     "license": "Apache-2.0",
+    "type": "library",
+    "keywords": [
+        "log2test",
+        "broken url",
+        "quality",
+        "testing"
+    ],
+    "authors": [
+        {
+            "name": "Ousama Ben Younes",
+            "email": "benyounes.ousama@gmail.com",
+            "role": "lead"
+        }
+    ],
+    "bin": [
+        "log2test"
+    ],
     "require": {
+        "php": "^5.6 || ^7.0",
         "kassner/log-parser": "~1.0",
         "symfony/yaml": "^3.1",
         "incenteev/composer-parameter-handler": "~2.0",
