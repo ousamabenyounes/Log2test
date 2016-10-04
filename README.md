@@ -15,12 +15,13 @@ Why exporting your log production's files to tests?
 
 
 
-**Let's now see how Log2Test works throw step by step as seen on screencast gif file bellow**
-- 1) At the beginning, no existing test on generated/curl directory
-- 2) Given a configuration file (Yaml File) -> config/parameters-log2test.yml   
-- 3) Given an Apache2 Access Log file -> log/test.log   
-- 4) Then Log2Tests generates all your curl tests -> run ./bin/log2test  
-- 5) Launch your curl tests now -> run ./bin/phpunit -c phpunit-curl.xml  
+**Let's now see how Log2Test works step by step as seen on screencast gif file bellow**
+- At the beginning, **no existing tests** on "generated/curl" directory
+- Given this context:  
+  - A configuration file (Yaml File) -> config/parameters-log2test.yml   
+  - An Apache2 Access Log file -> log/test.log   
+- Running **./bin/log2test** command will **generate all your curl tests**  
+- Launch your curl tests now -> run ./bin/phpunit -c phpunit-curl.xml  
 
 <img src="web/img/log2testCurl.gif"></img>
 
@@ -49,7 +50,7 @@ Here are all configuration's file properties:
 |:----------:|:-------------:|:-------------:|---------------|
 | host | Array | List of host to parse | |
 | logFile | String | Path to your acces log File | log/test.log |
-| testStack | String | Available test stack: phpunit_selenium, curl | curl |
+| testStack | String | Available test stack: "phpunit_selenium" or "curl" | curl |
 | beginLine | Int | Begin parsing at line X | 0 |
 | numberOfLine | Int | Number of line to parse | 300 |
 | logParserClass | String | Your log parsing class | \Log2Test\Apache2LogParser |
