@@ -16,15 +16,4 @@
     }
 
 {% endfor %}
-{% if true == enabledScreenshot %}
-    /**
-    * Take a screenshot
-    * @param string $filename
-    */
-    public function screenshot($filename) {
-        $filedata = $this->currentScreenshot();
-
-        file_put_contents('sceenshots/' . $filepath, $filedata);
-    }
-{% endif %}
 {% endblock %}

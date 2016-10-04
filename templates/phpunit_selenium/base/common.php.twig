@@ -1,7 +1,10 @@
 <?php
-{{ namespace is defined ? "namespace " ~ namespace ~ ";" : "" }}
 
-require('../../PhpunitSeleniumTest.php');
+namespace Log2Test;
+
+require_once('vendor/autoload.php');
+
+use Log2Test\PhpunitSeleniumTest;
 
 /**
  * PhpUnit / Selenium Tests generated from log file -> {{ logFile }}
