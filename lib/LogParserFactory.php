@@ -14,8 +14,12 @@ class LogParserFactory
     {
         $configParser = new ConfigParser();
         $logParserClass = $configParser->getValueFromKey('logParserClass');
+        $beginLine = $configParser->getValueFromKey('beginLine');
+        $logFile = $logParserClass->getValueFromKey('logFile');
+        $splFile = new \SplFileObject($logFile);
+        $splFile->seek($beginLine);
 
-        return new $logParserClass($configParser);
+        return new $logParserClass($configParser, $splFile, $logFile);
     }
 
 }

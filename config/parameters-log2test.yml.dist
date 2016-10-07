@@ -5,7 +5,6 @@ parameters:
     logFile: log/test.log
     testStack: selenium
     beginLine: 0
-    test: 2
     numberOfLine: 300
     logParserClass: \Log2Test\Apache2LogParser
     logFormat: '%h %l %u %t \"%r\" %>s %b'
