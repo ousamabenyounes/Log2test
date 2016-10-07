@@ -111,13 +111,24 @@ abstract class LogParser implements LogParserInterface
     protected $enabledScreenshot;
 
     /**
+     * ScreenShot enabled on all tests
+     *
+     * @var \SplFileObject
+     */
+    protected $splFileObject;
+
+
+    /**
      * LogParser constructor.
      * @param ConfigParser $configParser
+     * @param \SplFileObject $splFile
+     * @param String $logFile
      */
-    public function __construct(ConfigParser $configParser)
+    public function __construct(ConfigParser $configParser, \SplFileObject $splFile, $logFile)
     {
         $this->setConfigParser($configParser);
-        $this->setLogFile($configParser->getValueFromKey('logFile'));
+        $this->setLogFile($logFile);
+        $this->setSplFileObject($splFile);
         $this->setTestStack($configParser->getValueFromKey('testStack'));
         $this->setHosts($configParser->getValueFromKey('hosts'));
         $this->setNumberOfLine($configParser->getValueFromKey('numberOfLine'));
@@ -136,23 +147,36 @@ abstract class LogParser implements LogParserInterface
 
     }
 
+
+    /**
+     * @return \SplFileObject
+     */
+    public function loadSplFile()
+    {
+        $file = new \SplFileObject($this->getLogFile());
+        $file->seek($this->getBeginLine());
+
+        return $file;
+    }
+
     /**
      * {@inheritDoc}
      */
     public function parse()
     {
         $hosts = $this->getHosts();
+        $file = $this->getSplFileObject();
         foreach ($hosts as $host) {
-            $this->testConfiguration[$host] = [];
-        }
-        $file = new \SplFileObject($this->getLogFile());
-        $file->seek($this->getBeginLine());
-        for ($i = 0; !$file->eof() && $i < $this->getNumberOfLine(); $i++) {
-            $line = $file->current();
-            if ('' !== trim($line)){
-                $this->parseOneLine($file->current());
+            $testConfiguration = $this->getTestConfiguration();
+            $testConfiguration[$host] = (!isset($testConfiguration[$host]) ? [] : $testConfiguration[$host]);
+            $this->setTestConfiguration($testConfiguration);
+            for ($i = 0; !$file->eof() && $i < $this->getNumberOfLine(); $i++) {
+                $line = $file->current();
+                if ('' !== trim($line)) {
+                    $this->parseOneLine($line);
+                }
+                $file->next();
             }
-            $file->next();
         }
     }
 
@@ -205,10 +229,12 @@ abstract class LogParser implements LogParserInterface
      */
     public function addTestToConfiguration($host, $completePath)
     {
+        $testConfiguration = $this->getTestConfiguration();
         $completePathEncoded = (true === $this->isEncodedUrls() ?  urlencode($completePath) : $completePath);
-        if (!in_array($completePathEncoded, $this->testConfiguration[$host])) {
-            $this->testConfiguration[$host][] = $completePathEncoded;
+        if (!in_array($completePathEncoded, $testConfiguration[$host])) {
+            $testConfiguration[$host][] = $completePathEncoded;
         }
+        $this->setTestConfiguration($testConfiguration);
     }
 
     /**
@@ -446,6 +472,22 @@ abstract class LogParser implements LogParserInterface
     public function setEnabledScreenshot($enabledScreenshot)
     {
         $this->enabledScreenshot = $enabledScreenshot;
+    }
+
+    /**
+     * @return \SplFileObject
+     */
+    public function getSplFileObject()
+    {
+        return $this->splFileObject;
+    }
+
+    /**
+     * @param \SplFileObject $splFileObject
+     */
+    public function setSplFileObject($splFileObject)
+    {
+        $this->splFileObject = $splFileObject;
     }
 
 }

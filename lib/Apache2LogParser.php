@@ -23,9 +23,9 @@ class Apache2LogParser extends LogParser
     /*
      * {@inheritDoc}
      */
-    public function __construct(ConfigParser $configParser)
+    public function __construct(ConfigParser $configParser, \SplFileObject $splFile, $logFile)
     {
-        parent::__construct($configParser);
+        parent::__construct($configParser, $splFile, $logFile);
         $this->setLogFormat($configParser->getValueFromKey('logFormat'));
         $this->setKassnerLogParser(new \Kassner\LogParser\LogParser($this->getLogFormat()));
     }
@@ -45,7 +45,10 @@ class Apache2LogParser extends LogParser
             $method = $requestConfig[Constants::REQUEST_METHOD];
             $parsedUrl = parse_url($path);
             $extension = pathinfo($parsedUrl['path'], PATHINFO_EXTENSION);
-            if (Constants::METHOD_GET === $method && in_array($extension, $this->getExtensionsAllowed()))
+            if (Constants::METHOD_GET === $method &&
+                (in_array($extension, $this->getExtensionsAllowed()) ||
+                    in_array('*', $this->getExtensionsAllowed()) )
+            )
             {
                 $this->addTestToConfiguration($parsedLine->host, $path);
             }
@@ -62,7 +65,7 @@ class Apache2LogParser extends LogParser
     }
 
     /**
-     * @param KassnerLogParser $kassnerLogParser
+     * @param \Kassner\LogParser\LogParser $kassnerLogParser
      */
     public function setKassnerLogParser($kassnerLogParser)
     {
