@@ -76,9 +76,10 @@ trait Utils
     {
         if (!file_exists($path)) {
             $createdDir = mkdir($path);
-            if (true === $createdDir) {
+            if (true === $createdDir && $info === true) {
                 print '[INFO] Created directory: "' . $path . '"' . PHP_EOL;
             }
+
             return $createdDir;
         }
     }

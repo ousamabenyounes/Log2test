@@ -190,7 +190,7 @@ abstract class LogParser implements LogParserInterface
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
                 $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
-                Utils::createDir($hostDirectory, true);
+                Utils::createDir($hostDirectory);
                 $builder = new TemplateBuilder();
                 $className = $hostCleaned . 'From' . $this->getBeginLine() . 'To' . $this->getEndLine() . 'Test';
                 $builder->setOutputName($className . '.php');
