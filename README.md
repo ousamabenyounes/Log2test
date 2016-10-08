@@ -70,10 +70,17 @@ Phpunit
 Selenium Server (only needed if you choose phpunit_selenium for your test stack)  
 
 
+# Test
+Log2test is tested with phpunit dedicated tests
+Just run following command:
+
+```
+./bin/phpunit -c phpunit.xml
+```
+
 # Todo
 Add screenshot thumbnail  
 Add Global Reporting  
-Add phpunit tests to test log2test project  
 Add YellowLabTool option on parsing  
   
 
