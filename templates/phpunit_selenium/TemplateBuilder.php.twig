@@ -1,0 +1,19 @@
+{% extends "base/common.php.twig" %}
+
+{% block functions %}
+
+
+{% for path in paths %}{% set pathHashed = pathsHashed[loop.index0] %}
+    public function test{{ className | ucfirst }}Url{{ loop.index }}()
+    {
+            $this->url('{{ path }}');
+{% if  pauseBetweenTests > 0 %}
+            sleep({{ pauseBetweenTests }});
+{% endif %}
+{% if true == enabledScreenshot %}
+            $this->screenshot('{{ pathHashed }}');
+{% endif %}
+    }
+
+{% endfor %}
+{% endblock %}

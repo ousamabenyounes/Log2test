@@ -1,0 +1,34 @@
+<?php
+
+namespace Log2Test;
+
+require_once('vendor/autoload.php');
+
+use Log2Test\PhpunitSeleniumTest;
+
+/**
+ * PhpUnit / Selenium Tests generated from log file -> {{ logFile }}
+ * From Line {{ beginLine }} To Line {{ endLine }}
+*/
+
+class {{ className }} extends PhpunitSeleniumTest
+{
+
+    public static $browsers = array (
+        array (
+{% for browser in browsers %}
+            'browser' => '{{ browser }}',
+{% endfor %}
+        ),
+    );
+
+    protected function setUp()
+    {
+        $this->setBrowserUrl('{{ host }}');
+        $this->setClassName('{{ className }}');
+        $this->createDir('screenshots/{{ className }}');
+    }
+
+{% block functions %}
+{% endblock %}
+}

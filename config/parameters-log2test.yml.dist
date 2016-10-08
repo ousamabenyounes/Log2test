@@ -1,0 +1,20 @@
+parameters:
+    #list of hosts you want to keep from your logs
+    hosts:
+        - www.epitech.fr
+    logFile: log/test.log
+    testStack: selenium
+    beginLine: 0
+    numberOfLine: 300
+    logParserClass: \Log2Test\Apache2LogParser
+    logFormat: '%h %l %u %t \"%r\" %>s %b'
+    extensions_allowed:
+        - php
+        - html
+    browsers:
+        - '*chrome'
+    removeDuplicateUrl: false
+    #Pause Between each tests in seconds
+    pauseBetweenTests: 5
+    encodedUrls: true
+    enabledScreenshot: true
