@@ -19,3 +19,13 @@ script:
  
 notifications:
     email: false
+
+branches:
+    only:
+        - master
+        - dev
+        - 1.0
+
+env:
+    global:
+        - COMPOSER_CACHE_DIR=.composer-cache/
