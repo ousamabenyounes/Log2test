@@ -1,7 +1,6 @@
 # log2test
 
-[![Monthly Downloads](https://poser.pugx.org/ousamabenyounes/log2test/d/monthly.png)](https://packagist.org/packages/ousamabenyounes/log2test)  [![Build Status](https://travis-ci.org/ousamabenyounes/log2test.svg?branch=dev)](https://travis-ci.\
-org/ousamabenyounes/log2test) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/d9e3c01e-7bea-4705-8b0b-f6273dac5b09/mini.png)](https://insight.sensiolabs.com/projects/d9e3c01e-7bea-4705-8b0b-f6273dac5b09)
+[![Monthly Downloads](https://poser.pugx.org/ousamabenyounes/log2test/d/monthly.png)](https://packagist.org/packages/ousamabenyounes/log2test)  [![Build Status](https://travis-ci.org/ousamabenyounes/log2test.svg?branch=dev)](https://travis-ci.org/ousamabenyounes/log2test) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/d9e3c01e-7bea-4705-8b0b-f6273dac5b09/mini.png)](https://insight.sensiolabs.com/projects/d9e3c01e-7bea-4705-8b0b-f6273dac5b09)
 
 Log2Test is a simple PHP library that allows you to **transform your Production Log into test**.  
 You can export your log to the following stack:  
