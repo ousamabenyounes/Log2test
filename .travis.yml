@@ -3,4 +3,4 @@ php:
 - 5.5
 - 5.4
 - hhvm
-script: php composer.phar install & phpunit -c phpunit.xml
+script: composer install && phpunit -c phpunit.xml
