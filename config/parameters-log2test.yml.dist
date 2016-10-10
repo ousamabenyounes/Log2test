@@ -1,16 +1,15 @@
 parameters:
     #list of hosts you want to keep from your logs
     hosts:
-        - www.epitech.fr
+        - www.shop2tout.fr
     logFile: log/test.log
-    testStack: selenium
+    testStack: curl
     beginLine: 0
     numberOfLine: 300
     logParserClass: \Log2Test\Apache2LogParser
     logFormat: '%h %l %u %t \"%r\" %>s %b'
     extensions_allowed:
-        - php
-        - html
+        - *
     browsers:
         - '*chrome'
     removeDuplicateUrl: false
