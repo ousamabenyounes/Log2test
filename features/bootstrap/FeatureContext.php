@@ -48,9 +48,9 @@ class FeatureContext implements Context
     /**
      * @Then :arg1 file md5checksum is equal to :arg2
      */
-    public function fileMdchecksumIsEqualTo($filename, $arg2)
+    public function fileMdchecksumIsEqualTo($filename, $md5Original)
     {
-        PHPUnit_Framework_Assert::assertEquals(md5_file($filename), '515e2e43e038190b639279fa21392a9c');
+        PHPUnit_Framework_Assert::assertEquals(md5_file($filename), $md5Original);
     }
 
     /**
