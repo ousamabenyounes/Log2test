@@ -1,19 +1,14 @@
 parameters:
-    #list of hosts you want to keep from your logs
-    hosts:
-        - www.shop2tout.fr
+    hosts: [www.shop2tout.fr]
     logFile: log/test.log
     testStack: curl
     beginLine: 0
-    numberOfLine: 300
+    numberOfLine: 30
     logParserClass: \Log2Test\Apache2LogParser
     logFormat: '%h %l %u %t \"%r\" %>s %b'
-    extensions_allowed:
-        - *
-    browsers:
-        - '*chrome'
+    extensions_allowed: ['*']
+    browsers: ['*chrome']
     removeDuplicateUrl: false
-    #Pause Between each tests in seconds
-    pauseBetweenTests: 5
+    pauseBetweenTests: 1
     encodedUrls: true
     enabledScreenshot: true
