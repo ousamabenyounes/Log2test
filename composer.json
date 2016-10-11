@@ -31,7 +31,8 @@
     },
     "require-dev": {
         "symfony/var-dumper": "^3.0",
-        "phake/phake": "@stable"
+        "phake/phake": "@stable",
+        "behat/behat": "^3.2"
     },
     "scripts": {
         "post-install-cmd": [

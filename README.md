@@ -78,6 +78,8 @@ Just run following command:
 ./bin/phpunit
 ```
 
+Tests are built with travis-ci
+
 # Todo
 Add screenshot thumbnail  
 Add Global Reporting  
