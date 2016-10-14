@@ -11,7 +11,35 @@ namespace Log2Test;
 
 require_once('vendor/autoload.php');
 
-$logParser = LogParserFactory::create();
-$logParser->parse();
-$logParser->generateAllTests();
-$logParser->saveTestConfiguration();
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Formatter\OutputFormatter;
+
+$output = new ConsoleOutput();
+$output->setFormatter(new OutputFormatter(true));
+
+// create a new progress bar (50 units)
+$progress = new ProgressBar($output, 100);
+
+$progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
+
+// start and displays the progress bar
+$progress->setMessage('Task starts');
+$progress->start();
+$nbFileGenerated = 0;
+while (1) {
+    $logParser = LogParserFactory::create();
+    $parseNextLine = $logParser->parse();
+    $nbFileGenerated += $logParser->generateAllTests($progress);
+    $logParser->saveTestConfiguration();
+    $progress->advance();
+    if (false === $parseNextLine)
+    {
+        break;
+    }
+}
+
+$progress->setMessage(PHP_EOL . '[INFO] Total: ' . $nbFileGenerated . ' tests file generated');
+
+// ensure that the progress bar is at 100%
+$progress->finish();

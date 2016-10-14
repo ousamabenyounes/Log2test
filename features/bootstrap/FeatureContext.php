@@ -1,8 +1,10 @@
 <?php
 
 use Behat\Behat\Context\Context;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
 
 /**
  * Defines application features from the specific context.
@@ -42,7 +44,16 @@ class FeatureContext implements Context
      */
     public function iGenerateTest($arg1)
     {
-        $this->getApach2LogParser()->generateAllTests();
+        $output = new ConsoleOutput();
+        $output->setFormatter(new OutputFormatter(true));
+
+        $progress = new ProgressBar($output, 20);
+        $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
+        $progress->setMessage('Task starts');
+        $progress->start();
+        $nbFileGenerated = $this->getApach2LogParser()->generateAllTests($progress);
+        $progress->setMessage(PHP_EOL . '[INFO] Total: ' . $nbFileGenerated . ' tests file generated');
+        $progress->finish();
     }
 
     /**
