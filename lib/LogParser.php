@@ -3,6 +3,7 @@
 namespace Log2Test;
 
 
+use Symfony\Component\Console\Helper\ProgressBar;
 use TwigGenerator\Builder\Generator;
 use Log2Test\Utils;
 
@@ -17,6 +18,7 @@ abstract class LogParser implements LogParserInterface
     protected $logFile;
 
     /**
+    /
      * testStack => can be Selenium or Curl
      *
      * @var string
@@ -119,6 +121,13 @@ abstract class LogParser implements LogParserInterface
 
 
     /**
+     * Number of line for the given splFileObject
+     *
+     * @var int
+     */
+    protected $numberOfLineMax;
+
+    /**
      * LogParser constructor.
      * @param ConfigParser $configParser
      * @param \SplFileObject $splFile
@@ -140,23 +149,16 @@ abstract class LogParser implements LogParserInterface
         $this->setPauseBetweenTests($configParser->getValueFromKey('pauseBetweenTests'));
         $this->setEncodedUrls($configParser->getValueFromKey('encodedUrls'));
         $this->setEnabledScreenshot($configParser->getValueFromKey('enabledScreenshot'));
+        // Set Maximum number of file property after file checking
+        $splFile->seek($splFile->getSize());
+        $this->setNumberOfLineMax($splFile->key());
+        // Reset current seek cursor to begin Line
+        $splFile->seek($configParser->getValueFromKey('beginLine'));
     }
 
     public function getCurrentConfiguration()
     {
 
-    }
-
-
-    /**
-     * @return \SplFileObject
-     */
-    public function loadSplFile()
-    {
-        $file = new \SplFileObject($this->getLogFile());
-        $file->seek($this->getBeginLine());
-
-        return $file;
     }
 
     /**
@@ -170,22 +172,29 @@ abstract class LogParser implements LogParserInterface
             $testConfiguration = $this->getTestConfiguration();
             $testConfiguration[$host] = (!isset($testConfiguration[$host]) ? [] : $testConfiguration[$host]);
             $this->setTestConfiguration($testConfiguration);
-            for ($i = 0; !$file->eof() && $i < $this->getNumberOfLine(); $i++) {
+            for ($i = 0; $i < $this->getNumberOfLine(); $i++) {
                 $line = $file->current();
                 if ('' !== trim($line)) {
                     $this->parseOneLine($line);
                 }
                 $file->next();
+                if ($file->eof())
+                {
+                    return false;
+                }
             }
         }
+
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function generateAllTests()
+    public function generateAllTests(ProgressBar $progressBar)
     {
         $currentPath = __DIR__ . '/../';
+        $generatedFIle = 0;
         foreach ($this->getTestConfiguration() as $host => $paths) {
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
@@ -214,9 +223,12 @@ abstract class LogParser implements LogParserInterface
                     'enabledScreenshot' => $this->isEnabledScreenshot(),
                 ));
                 $generator->addBuilder($builder);
-                $generator->writeOnDisk($hostDirectory, true);
+                $generator->writeOnDisk($hostDirectory);
+                $progressBar->setMessage('[INFO] Generating Php File: ' . $className . '.php');
+                $generatedFIle++;
             }
         }
+        return $generatedFIle;
     }
 
     /**
@@ -231,7 +243,10 @@ abstract class LogParser implements LogParserInterface
     {
         $testConfiguration = $this->getTestConfiguration();
         $completePathEncoded = (true === $this->isEncodedUrls() ?  urlencode($completePath) : $completePath);
-        if (!in_array($completePathEncoded, $testConfiguration[$host])) {
+        // if (!in_array($completePathEncoded, $testConfiguration[$host])) {
+        if (false === $this->isRemoveDuplicateUrl() ||
+           (true === $this->isEnabledScreenshot() && !in_array($completePathEncoded, $testConfiguration[$host])) )
+        {
             $testConfiguration[$host][] = $completePathEncoded;
         }
         $this->setTestConfiguration($testConfiguration);
@@ -490,6 +505,21 @@ abstract class LogParser implements LogParserInterface
         $this->splFileObject = $splFileObject;
     }
 
+    /**
+     * @return int
+     */
+    public function getNumberOfLineMax()
+    {
+        return $this->numberOfLineMax;
+    }
+
+    /**
+     * @param int $numberOfLineMax
+     */
+    public function setNumberOfLineMax($numberOfLineMax)
+    {
+        $this->numberOfLineMax = $numberOfLineMax;
+    }
 }
 
 

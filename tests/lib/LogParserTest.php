@@ -40,6 +40,8 @@ class LogParserTest extends \PHPUnit_Framework_TestCase
         $configParserMock = \Phake::mock('\Log2Test\ConfigParser');
         \Phake::when($configParserMock)->getValueFromKey(\Phake::anyParameters())
             ->thenReturn('response');
+        \Phake::when($configParserMock)->getValueFromKey('removeDuplicateUrl')
+            ->thenReturn(false);
         \Phake::when($configParserMock)->getValueFromKey('hosts')
             ->thenReturn(['www.shop2tout.com']);
         \Phake::when($configParserMock)->getValueFromKey('numberOfLine')
