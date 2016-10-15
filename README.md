@@ -30,7 +30,7 @@ Why exporting your log production's files to tests?
 # Install
 
 ```
-composer require ousamabenyounes/log2test
+git clone https://github.com/ousamabenyounes/log2test 
 composer install
 ```
 
