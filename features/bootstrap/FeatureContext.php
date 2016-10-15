@@ -64,6 +64,11 @@ class FeatureContext implements Context
      */
     public function fileShaIsEqualTo($filename, $originalFilename)
     {
+
+        dump(file_get_contents($filename));
+
+        dump(file_get_contents($originalFilename));
+
         PHPUnit_Framework_Assert::assertEquals(sha1_file($filename), sha1_file($originalFilename));
     }
 
