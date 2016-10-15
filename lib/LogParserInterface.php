@@ -2,6 +2,8 @@
 
 namespace Log2Test;
 
+use Symfony\Component\Console\Helper\ProgressBar;
+
 /**
  * Interface implemented by parser classes.
  *
@@ -17,7 +19,7 @@ interface LogParserInterface
     /**
      * Generate All Tests By Host obtained by parsing the log file
      */
-    public function generateAllTests();
+    public function generateAllTests(ProgressBar $progressBar);
 
     /**
      * Parse one log line content and search if one of our host is present

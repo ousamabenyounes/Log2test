@@ -40,6 +40,8 @@ class LogParserTest extends \PHPUnit_Framework_TestCase
         $configParserMock = \Phake::mock('\Log2Test\ConfigParser');
         \Phake::when($configParserMock)->getValueFromKey(\Phake::anyParameters())
             ->thenReturn('response');
+        \Phake::when($configParserMock)->getValueFromKey('removeDuplicateUrl')
+            ->thenReturn(false);
         \Phake::when($configParserMock)->getValueFromKey('hosts')
             ->thenReturn(['www.shop2tout.com']);
         \Phake::when($configParserMock)->getValueFromKey('numberOfLine')
@@ -81,14 +83,13 @@ class LogParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException Kassner\LogParser\FormatException
      */
-    public function testParseErrorThrow()
+    public function testParseErrorThrowFormatException()
     {
         $configParserMock = $this->getConfigParserMock();
         $splFileObjectMock = $this->getSplFileObjectMock();
         $splFileObjectMock->expects($this->any())->method('current')->willReturn('eeee');
         $apache2LogParser = new Apache2LogParser($configParserMock, $splFileObjectMock, '/log/file.log');
         $apache2LogParser->parse();
-        $this->assertEquals(self::$testConfiguration, $apache2LogParser->getTestConfiguration());
     }
 
     /* ******************************** Getter & Setter *************************** */
