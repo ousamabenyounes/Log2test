@@ -3,7 +3,7 @@
 use Behat\Behat\Context\Context;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
-
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Defines application features from the specific context.
@@ -50,11 +50,21 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Then :arg1 file_sha1 is equal to :arg2
+     * @Then :arg1 was generated
      */
-    public function fileShaIsEqualTo($filename, $sha1Original)
+    public function wasGenerated($filename)
     {
-        PHPUnit_Framework_Assert::assertEquals(sha1_file($filename), $sha1Original);
+        $fs = new Filesystem();
+        $fileExist = $fs->exists($filename);
+        PHPUnit_Framework_Assert::assertEquals($fileExist, true);
+    }
+
+    /**
+     * @Then :arg1 file_sha1 is equal to :arg2 file_sha1
+     */
+    public function fileShaIsEqualTo($filename, $originalFilename)
+    {
+        PHPUnit_Framework_Assert::assertEquals(sha1_file($filename), sha1_file($originalFilename));
     }
 
 
