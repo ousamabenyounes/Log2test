@@ -14,13 +14,9 @@
     <testsuites>
         <testsuite name="Log2Test Test Suite">
             <directory>./tests/</directory>
+            <exclude>./tests/fixtures</exclude>
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist>
-            <directory>./src/TwigGenerator/</directory>
-        </whitelist>
-    </filter>
 </phpunit>
 
