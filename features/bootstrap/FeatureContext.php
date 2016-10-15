@@ -60,20 +60,14 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Then :arg1 file_sha1 is equal to :arg2 file_sha1
+     * @Then :arg1 file_sha1 is equal to :arg2
      */
-    public function fileShaIsEqualTo($filename, $originalFilename)
+    public function fileShaIsEqualTo($filename, $sha1Original)
     {
 
-        dump(file_get_contents($filename));
-
-        dump(file_get_contents($originalFilename));
-
-        PHPUnit_Framework_Assert::assertEquals(sha1_file($filename), sha1_file($originalFilename));
+        PHPUnit_Framework_Assert::assertEquals(sha1_file($filename), $sha1Original);
     }
-
-
-
+    
     /**
      * @return \Log2Test\Apache2LogParser
      */

@@ -8,7 +8,7 @@ parameters:
     logFormat: '%h %l %u %t \"%r\" %>s %b'
     extensions_allowed: ['*']
     browsers: ['*chrome']
-    removeDuplicateUrl: false
+    removeDuplicateUrl: true
     pauseBetweenTests: 1
     encodedUrls: true
     enabledScreenshot: true
