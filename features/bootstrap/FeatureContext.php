@@ -2,7 +2,6 @@
 
 use Behat\Behat\Context\Context;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 
@@ -34,35 +33,31 @@ class FeatureContext implements Context
      */
     public function apacheLogFileLogTestLog()
     {
-        $apache2LogParser = \Log2Test\LogParserFactory::create();
-        $apache2LogParser->parse();
-        $this->setApach2LogParser($apache2LogParser);
+        $this->setApach2LogParser(\Log2Test\LogParserFactory::create());
     }
 
     /**
      * @When I generate :arg1 test
      */
-    public function iGenerateTest($arg1)
+    public function iGenerateTest($testStack)
     {
-        $output = new ConsoleOutput();
-        $output->setFormatter(new OutputFormatter(true));
-
-        $progress = new ProgressBar($output, 20);
-        $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
-        $progress->setMessage('Task starts');
-        $progress->start();
+        $apache2LogParser = $this->getApach2LogParser();
+        $apache2LogParser->setTestStack($testStack);
+        $apache2LogParser->parse();
+        $progress = new ProgressBar(new ConsoleOutput(), 20);
         $nbFileGenerated = $this->getApach2LogParser()->generateAllTests($progress);
-        $progress->setMessage(PHP_EOL . '[INFO] Total: ' . $nbFileGenerated . ' tests file generated');
-        $progress->finish();
+        PHPUnit_Framework_Assert::assertEquals($nbFileGenerated, 1);
     }
 
     /**
-     * @Then :arg1 file md5checksum is equal to :arg2
+     * @Then :arg1 file_sha1 is equal to :arg2
      */
-    public function fileMdchecksumIsEqualTo($filename, $md5Original)
+    public function fileShaIsEqualTo($filename, $sha1Original)
     {
-        PHPUnit_Framework_Assert::assertEquals(md5_file($filename), $md5Original);
+        PHPUnit_Framework_Assert::assertEquals(sha1_file($filename), $sha1Original);
     }
+
+
 
     /**
      * @return \Log2Test\Apache2LogParser

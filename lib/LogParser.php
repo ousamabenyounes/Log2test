@@ -168,11 +168,12 @@ abstract class LogParser implements LogParserInterface
     {
         $hosts = $this->getHosts();
         $file = $this->getSplFileObject();
+        $numberOfLine = $this->getNumberOfLine();
         foreach ($hosts as $host) {
             $testConfiguration = $this->getTestConfiguration();
             $testConfiguration[$host] = (!isset($testConfiguration[$host]) ? [] : $testConfiguration[$host]);
             $this->setTestConfiguration($testConfiguration);
-            for ($i = 0; $i < $this->getNumberOfLine(); $i++) {
+            for ($i = 0; $i < $numberOfLine; $i++) {
                 $line = $file->current();
                 if ('' !== trim($line)) {
                     $this->parseOneLine($line);
