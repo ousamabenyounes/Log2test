@@ -18,28 +18,53 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 $output = new ConsoleOutput();
 $output->setFormatter(new OutputFormatter(true));
 
-// create a new progress bar (50 units)
-$progress = new ProgressBar($output, 100);
 
+$configParser = new ConfigParser();
+$logFile = $configParser->getValueFromKey('logFile');
+$splFile = new \SplFileObject($logFile, 'r');
+$splFile->seek(PHP_INT_MAX);
+$nbLine = $splFile->key() + 1;
+dump('nbLine enfin... ' . $nbLine);
+
+// create a new progress bar (50 units)
+$progress = new ProgressBar($output, $nbLine);
+$progress->setOverwrite(true);
+//$progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed% %message%');
 $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
+$progress->setOverwrite(true);
 
 // start and displays the progress bar
 $progress->setMessage('Task starts');
 $progress->start();
 $nbFileGenerated = 0;
+dump('avant boucle...');
+$progress->setOverwrite(true);
+
+$logParser = LogParserFactory::create();
+/*`
+$progress->setMessage('eeee');
+$progress->advance();
+
+sleep(2);
+$progress->setMessage('ffff');
+$progress->advance();
+sleep(3);
+die;
+*/
 while (1) {
-    $logParser = LogParserFactory::create();
+
     $parseNextLine = $logParser->parse();
+
     $nbFileGenerated += $logParser->generateAllTests($progress);
     $logParser->saveTestConfiguration();
-    $progress->advance();
+    $progress->advance($logParser->getNumberOfLine());
     if (false === $parseNextLine)
     {
         break;
     }
 }
 
-$progress->setMessage(PHP_EOL . '[INFO] Total: ' . $nbFileGenerated . ' tests file generated');
+//$progress->setMessage(PHP_EOL . '[INFO] Total: ' . $nbFileGenerated . ' tests file generated');
 
 // ensure that the progress bar is at 100%
 $progress->finish();
