@@ -24,7 +24,6 @@ $logFile = $configParser->getValueFromKey('logFile');
 $splFile = new \SplFileObject($logFile, 'r');
 $splFile->seek(PHP_INT_MAX);
 $nbLine = $splFile->key() + 1;
-dump('nbLine enfin... ' . $nbLine);
 
 // create a new progress bar (50 units)
 $progress = new ProgressBar($output, $nbLine);
@@ -37,10 +36,11 @@ $progress->setOverwrite(true);
 $progress->setMessage('Task starts');
 $progress->start();
 $nbFileGenerated = 0;
-dump('avant boucle...');
 $progress->setOverwrite(true);
 
 $logParser = LogParserFactory::create();
+
+$progress->setProgress($logParser->getBeginLine());
 /*`
 $progress->setMessage('eeee');
 $progress->advance();

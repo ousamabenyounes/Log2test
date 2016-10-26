@@ -1,3 +1,4 @@
 vendor/
 config/parameters-log2test.yml
 bin/
+.idea/
