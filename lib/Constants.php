@@ -59,5 +59,7 @@ final class Constants
     const TESTS_CURL_PATH = 'generated/curl/';
     const TESTS_PHPUNIT_SELENIUM_PATH = 'generated/phpunit_selenium/';
     const TESTS_SCREENSHOT_PATH = 'generated/screenshots/';
+    const BIN_DIR = 'bin/';
+    const LOG2TEST_BIN = 'log2test';
 
 }

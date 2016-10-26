@@ -24,5 +24,6 @@ class Installer
         if ($fs->exists(Constants::PARAMETER_FILE_FROM_VENDOR)) {
             $fs->copy(Constants::PARAMETER_FILE_FROM_VENDOR, Constants::PARAMETER_FILE_TO);
         }
+        $fs->copy(Constants::LOG2TEST_BIN, Constants::BIN_DIR . Constants::LOG2TEST_BIN);
     }
 }
