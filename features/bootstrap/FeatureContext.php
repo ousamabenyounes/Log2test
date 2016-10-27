@@ -46,7 +46,7 @@ class FeatureContext implements Context
         $apache2LogParser->parse();
         $progress = new ProgressBar(new ConsoleOutput(), 20);
         $nbFileGenerated = $this->getApach2LogParser()->generateAllTests($progress);
-        PHPUnit_Framework_Assert::assertEquals($nbFileGenerated, 1);
+        PHPUnit_Framework_Assert::assertEquals($nbFileGenerated, 2);
     }
 
     /**
