@@ -150,9 +150,6 @@ abstract class LogParser implements LogParserInterface
         $this->setEncodedUrls($configParser->getValueFromKey('encodedUrls'));
         $this->setEnabledScreenshot($configParser->getValueFromKey('enabledScreenshot'));
 
-        // Set Maximum number of file property after file checking
-        //$splFile->seek($splFile->getSize());
-        //$this->setNumberOfLineMax($splFile->key());
         // Reset current seek cursor to begin Line
         $splFile->seek($configParser->getValueFromKey('beginLine'));
     }
