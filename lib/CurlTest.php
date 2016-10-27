@@ -18,18 +18,24 @@ class CurlTest extends \PHPUnit_Framework_TestCase
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-        $output = curl_exec($ch);
+        $data = curl_exec($ch);
         $info = curl_getinfo($ch);
-        if (!curl_errno($ch))
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (curl_errno($ch))
         {
-            // here we can log
-            //La requête a mis ' . $info['total_time'] . ' secondes à être envoyée à ' . $info['url'];
+           $this->fail('[Error] url => "' . $url . '"' . ' curl error => "' . curl_error($ch) . '"');
+        }
+        if (empty($data))
+        {
+            $this->fail('[Error] url => "' . $url . '"' . ' Empty Content ');
         }
         curl_close($ch);
+        $this->assertContains($httpCode, [200], '[Error] url => "' . $url . '"'  . ' HttpStatusCode => "' . $httpCode . '"');
 
         return [
-            'content' => $output,
+            'content' => $data,
             'statusCode' => $info['http_code']
         ];
     }
+
 }

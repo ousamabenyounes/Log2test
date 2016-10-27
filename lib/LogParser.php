@@ -149,9 +149,10 @@ abstract class LogParser implements LogParserInterface
         $this->setPauseBetweenTests($configParser->getValueFromKey('pauseBetweenTests'));
         $this->setEncodedUrls($configParser->getValueFromKey('encodedUrls'));
         $this->setEnabledScreenshot($configParser->getValueFromKey('enabledScreenshot'));
+
         // Set Maximum number of file property after file checking
-        $splFile->seek($splFile->getSize());
-        $this->setNumberOfLineMax($splFile->key());
+        //$splFile->seek($splFile->getSize());
+        //$this->setNumberOfLineMax($splFile->key());
         // Reset current seek cursor to begin Line
         $splFile->seek($configParser->getValueFromKey('beginLine'));
     }
@@ -195,7 +196,7 @@ abstract class LogParser implements LogParserInterface
     public function generateAllTests(ProgressBar $progressBar)
     {
         $currentPath = __DIR__ . '/../';
-        $generatedFIle = 0;
+        $generatedFile = 0;
         foreach ($this->getTestConfiguration() as $host => $paths) {
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
@@ -225,11 +226,12 @@ abstract class LogParser implements LogParserInterface
                 ));
                 $generator->addBuilder($builder);
                 $generator->writeOnDisk($hostDirectory);
-                $progressBar->setMessage('[INFO] Generating Php File: ' . $className . '.php');
-                $generatedFIle++;
+                $generatedFile = $generatedFile + 1;
+                $progressBar->setMessage('[INFO] Generating Php File: ' . $className  . '.php');
+                $generatedFile++;
             }
         }
-        return $generatedFIle;
+        return $generatedFile;
     }
 
     /**
@@ -261,6 +263,9 @@ abstract class LogParser implements LogParserInterface
         $configParser = $this->getConfigParser();
         $newBeginLine = $this->getBeginLine() + $this->getNumberOfLine();
         $configParser->updateConfigurationValue(Constants::BEGIN_LINE, $newBeginLine);
+        $this->setBeginLine($newBeginLine);
+        $this->setEndLine($this->getNumberOfLine() + $newBeginLine);
+        $this->setTestConfiguration([]);
     }
 
     /********** GETTER AND SETTERS ************/
