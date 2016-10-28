@@ -12,3 +12,4 @@ parameters:
     pauseBetweenTests: 1
     encodedUrls: true
     enabledScreenshot: true
+    log2testVersion: V1.2
