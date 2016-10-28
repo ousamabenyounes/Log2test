@@ -4,22 +4,16 @@ namespace Log2Test;
 
 require_once('vendor/autoload.php');
 
-use Log2Test\PhpunitSeleniumTest;
-
-/**
- * PhpUnit / Selenium Tests generated from log file -> {{ logFile }}
- * From Line {{ beginLine }} To Line {{ endLine }}
-*/
-
+{% include 'global_comment.php.twig' %}
 class {{ className }} extends PhpunitSeleniumTest
 {
 
     public static $browsers = array (
         array (
-{% for browser in browsers %}
+        {% for browser in browsers %}
             'browser' => '{{ browser }}',
-{% endfor %}
-        ),
+    {% endfor %}
+    ),
     );
 
     protected function setUp()
@@ -29,6 +23,4 @@ class {{ className }} extends PhpunitSeleniumTest
         $this->createDir('screenshots/{{ className }}');
     }
 
-{% block functions %}
-{% endblock %}
 }
