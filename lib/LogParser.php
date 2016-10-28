@@ -18,7 +18,6 @@ abstract class LogParser implements LogParserInterface
     protected $logFile;
 
     /**
-    /
      * testStack => can be Selenium or Curl
      *
      * @var string
@@ -128,6 +127,15 @@ abstract class LogParser implements LogParserInterface
     protected $numberOfLineMax;
 
     /**
+    /
+     * log2test project current version
+     *
+     * @var string
+     */
+    protected $log2testVersion;
+
+
+    /**
      * LogParser constructor.
      * @param ConfigParser $configParser
      * @param \SplFileObject $splFile
@@ -149,6 +157,7 @@ abstract class LogParser implements LogParserInterface
         $this->setPauseBetweenTests($configParser->getValueFromKey('pauseBetweenTests'));
         $this->setEncodedUrls($configParser->getValueFromKey('encodedUrls'));
         $this->setEnabledScreenshot($configParser->getValueFromKey('enabledScreenshot'));
+        $this->setLog2testVersion($configParser->getValueFromKey('log2testVersion'));
 
         // Reset current seek cursor to begin Line
         $splFile->seek($configParser->getValueFromKey('beginLine'));
@@ -194,12 +203,14 @@ abstract class LogParser implements LogParserInterface
     {
         $currentPath = __DIR__ . '/../';
         $generatedFile = 0;
+        $this->generateAllMainTestClass($progressBar);
         foreach ($this->getTestConfiguration() as $host => $paths) {
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
+                $mainHostClassName = $hostCleaned . 'MainHost';
                 $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
                 Utils::createDir($hostDirectory);
-                $builder = new TemplateBuilder();
+                $builder = new TestUrlsGeneratorBuilder();
                 $className = $hostCleaned . 'From' . $this->getBeginLine() . 'To' . $this->getEndLine() . 'Test';
                 $builder->setOutputName($className . '.php');
                 $builder->setVariable('className', $className);
@@ -216,10 +227,11 @@ abstract class LogParser implements LogParserInterface
                     'hostCleaned'       => $hostCleaned,
                     'paths'             => $paths,
                     'pathsHashed'       => array_map('md5', $paths),
-                    'browsers'          => $this->getBrowsers(),
                     'logFile'           => $this->getLogFile(),
                     'pauseBetweenTests' => $this->getPauseBetweenTests(),
                     'enabledScreenshot' => $this->isEnabledScreenshot(),
+                    'log2testVersion'   => $this->getLog2testVersion(),
+                    'mainHostClassName' => $mainHostClassName
                 ));
                 $generator->addBuilder($builder);
                 $generator->writeOnDisk($hostDirectory);
@@ -229,6 +241,40 @@ abstract class LogParser implements LogParserInterface
             }
         }
         return $generatedFile;
+    }
+
+
+    /**
+     * @param ProgressBar $progressBar
+     */
+    public function generateAllMainTestClass(ProgressBar $progressBar)
+    {
+        $currentPath = __DIR__ . '/../';
+        foreach (array_keys($this->getTestConfiguration()) as $host) {
+            $hostCleaned = ucfirst(Utils::urlToString($host));
+            $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
+            Utils::createDir($hostDirectory);
+            $builder = new MainHostGeneratorBuilder();
+            $className = $hostCleaned . 'MainHost';
+            $builder->setOutputName($className . '.php');
+            $builder->setVariable('className', $className);
+            $generator = new Generator();
+            $generator->setTemplateDirs(array(
+                $currentPath . 'templates/' . $this->getTestStack(),
+            ));
+            $generator->setMustOverwriteIfExists(true);
+            $generator->setVariables(array(
+                'host'              => $host,
+                'hostCleaned'       => $hostCleaned,
+                'log2testVersion' => $this->getLog2testVersion(),
+                'logFile'           => $this->getLogFile(),
+                'enabledScreenshot' => $this->isEnabledScreenshot(),
+                'browsers'          => $this->getBrowsers(),
+            ));
+            $generator->addBuilder($builder);
+            $generator->writeOnDisk($hostDirectory);
+            $progressBar->setMessage('[INFO] Generating Main Host Php File: ' . $className  . '.php');
+        }
     }
 
     /**
@@ -522,6 +568,22 @@ abstract class LogParser implements LogParserInterface
     public function setNumberOfLineMax($numberOfLineMax)
     {
         $this->numberOfLineMax = $numberOfLineMax;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLog2testVersion()
+    {
+        return $this->log2testVersion;
+    }
+
+    /**
+     * @param string $log2testVersion
+     */
+    public function setLog2testVersion($log2testVersion)
+    {
+        $this->log2testVersion = $log2testVersion;
     }
 }
 

@@ -4,33 +4,25 @@ namespace Log2Test;
 
 require_once('vendor/autoload.php');
 
-
-use Log2Test\CurlTest;
-
-
-/**
- * Simple Php Curl Tests generated from log file -> {{ logFile }}
- * From Line {{ beginLine }} To Line {{ endLine }}
-*/
-
+{% include 'global_comment.php.twig' %}
 class {{ className }} extends CurlTest
 {
     /**
-     * @var string
-     */
+    * @var string
+    */
     protected $host;
 
     /**
-     * @return string
-     */
+    * @return string
+    */
     public function getHost()
     {
         return $this->host;
     }
 
     /**
-     * @param string $host
-     */
+    * @param string $host
+    */
     public function setHost($host)
     {
         $this->host = $host;
@@ -41,6 +33,13 @@ class {{ className }} extends CurlTest
         $this->setHost('{{ host }}');
     }
 
-{% block functions %}
-{% endblock %}
+{% if true == enabledScreenshot %}
+    /**
+    * Take a screenshot
+    * @param string $filename
+    */
+    public function screenshot($filename) {
+    // implements
+    }
+{% endif %}
 }

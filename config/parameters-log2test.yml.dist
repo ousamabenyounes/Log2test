@@ -1,5 +1,5 @@
 parameters:
-    hosts: [www.shop2tout.fr]
+    hosts: [www.shop2tout.com]
     logFile: log/test.log
     testStack: curl
     beginLine: 0
@@ -9,6 +9,7 @@ parameters:
     extensions_allowed: ['*']
     browsers: ['*chrome']
     removeDuplicateUrl: true
-    pauseBetweenTests: 1
-    encodedUrls: true
+    pauseBetweenTests: 0
+    encodedUrls: false
     enabledScreenshot: true
+    log2testVersion: V1.2
