@@ -1,7 +1,13 @@
-{% extends "base/common.php.twig" %}
+<?php
 
-{% block functions %}
+namespace Log2Test;
 
+require_once('vendor/autoload.php');
+require_once('{{ mainHostClassName }}.php');
+
+{% include 'global_comment.php.twig' %}
+class {{ className }} extends {{ mainHostClassName }}
+{
 
 {% for path in paths %}{% set pathHashed = pathsHashed[loop.index0] %}
     public function test{{ className | ucfirst }}Url{{ loop.index }}()
@@ -16,4 +22,4 @@
     }
 
 {% endfor %}
-{% endblock %}
+}

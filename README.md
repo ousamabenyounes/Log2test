@@ -2,15 +2,16 @@
 
 [![Monthly Downloads](https://poser.pugx.org/ousamabenyounes/log2test/d/monthly.png)](https://packagist.org/packages/ousamabenyounes/log2test)  [![Build Status](https://travis-ci.org/ousamabenyounes/log2test.svg?branch=dev)](https://travis-ci.org/ousamabenyounes/log2test) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/d9e3c01e-7bea-4705-8b0b-f6273dac5b09/mini.png)](https://insight.sensiolabs.com/projects/d9e3c01e-7bea-4705-8b0b-f6273dac5b09)
 
-Log2Test is a simple PHP library that allows you to **transform your Production Log into test**.  
+Log2Test is a PHP application that allows you to **transform your Production Log into test**.  
 You can export your log to the following stack:  
-- **PhpCurl**: A good solution when you only log API calls. No Need to run Javascript or Ajax calls  
+- **PhpCurl**: A good solution when you only log API calls or if you don't Need to run Javascript or Ajax calls  
 - **PhpunitSelenium**: You can define browsers you want to test  
 
 Why exporting your log production's files to tests?
 
 - Be able to **find broken links**  
-- Before sending new features in production, you can **easily launch real tests in pre-production**  
+- Detect Blank/Empty web pages (When a 500 error occurs and no error redirection page is enabled)
+- Before sending new features in production, you can **easily launch real tests for your pre-production**  
 - Launching all your access log on different browsers with Selenium allows you to **validate Cross Browser Compatibility**  
 
 
@@ -21,7 +22,7 @@ Why exporting your log production's files to tests?
   - A configuration file (Yaml File) -> config/parameters-log2test.yml   
   - An Apache2 Access Log file -> log/test.log   
 - Running **./bin/log2test** command will **generate all your curl tests**  
-- Launch your curl tests now -> run ./bin/phpunit -c phpunit-curl.xml  
+- Now you can Launch all your curl tests -> run ./bin/phpunit -c phpunit-curl.xml  
 
 <img src="web/img/log2testCurl.gif"></img>
 
