@@ -39,7 +39,7 @@ class Apache2LogParser extends LogParser
         $parsedLine = $kassnerParser->parse($line);
         if (isset($parsedLine->host) &&
             isset($parsedLine->request) &&
-            in_array($parsedLine->host, $this->getHosts())) {
+            $this->inArrayRecursif($parsedLine->host, $this->getHosts())) {
             $requestConfig = explode(Constants::SPACE_CHAR, $parsedLine->request);
             $path = $requestConfig[Constants::REQUEST_PATH];
             $method = $requestConfig[Constants::REQUEST_METHOD];

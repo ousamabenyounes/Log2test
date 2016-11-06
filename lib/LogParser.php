@@ -174,11 +174,16 @@ abstract class LogParser implements LogParserInterface
     public function parse()
     {
         $hosts = $this->getHosts();
-        $file = $this->getSplFileObject();
         $numberOfLine = $this->getNumberOfLine();
-        foreach ($hosts as $host) {
+        $file = $this->getSplFileObject();
+        foreach ($hosts as $hostConfig) {
+            $dest = $hostConfig[Constants::HOST_DEST];
+            $host = $hostConfig[Constants::HOST_SOURCE];
             $testConfiguration = $this->getTestConfiguration();
             $testConfiguration[$host] = (!isset($testConfiguration[$host]) ? [] : $testConfiguration[$host]);
+            $testConfiguration[$host]['paths'] = (!isset($testConfiguration[$host]['paths'])
+                ? [] : $testConfiguration[$host]['paths']);
+            $testConfiguration[$host]['dest'] = $dest;
             $this->setTestConfiguration($testConfiguration);
             for ($i = 0; $i < $numberOfLine; $i++) {
                 $line = $file->current();
@@ -204,7 +209,9 @@ abstract class LogParser implements LogParserInterface
         $currentPath = __DIR__ . '/../';
         $generatedFile = 0;
         $this->generateAllMainTestClass($progressBar);
-        foreach ($this->getTestConfiguration() as $host => $paths) {
+        foreach ($this->getTestConfiguration() as $hostConfig) {
+            $paths = $hostConfig['paths'];
+            $host = $hostConfig['dest'];
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
                 $mainHostClassName = $hostCleaned . 'MainHost';
@@ -249,8 +256,10 @@ abstract class LogParser implements LogParserInterface
      */
     public function generateAllMainTestClass(ProgressBar $progressBar)
     {
+
         $currentPath = __DIR__ . '/../';
-        foreach (array_keys($this->getTestConfiguration()) as $host) {
+        foreach ($this->getTestConfiguration() as $key => $hostConfig) {
+            $host = $hostConfig['dest'];
             $hostCleaned = ucfirst(Utils::urlToString($host));
             $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
             Utils::createDir($hostDirectory);
@@ -289,11 +298,10 @@ abstract class LogParser implements LogParserInterface
     {
         $testConfiguration = $this->getTestConfiguration();
         $completePathEncoded = (true === $this->isEncodedUrls() ?  urlencode($completePath) : $completePath);
-        // if (!in_array($completePathEncoded, $testConfiguration[$host])) {
         if (false === $this->isRemoveDuplicateUrl() ||
-           (true === $this->isEnabledScreenshot() && !in_array($completePathEncoded, $testConfiguration[$host])) )
+           (true === $this->isEnabledScreenshot() && !in_array($completePathEncoded, $testConfiguration[$host]['paths'])) )
         {
-            $testConfiguration[$host][] = $completePathEncoded;
+            $testConfiguration[$host]['paths'][] = $completePathEncoded;
         }
         $this->setTestConfiguration($testConfiguration);
     }
@@ -309,6 +317,24 @@ abstract class LogParser implements LogParserInterface
         $this->setBeginLine($newBeginLine);
         $this->setEndLine($this->getNumberOfLine() + $newBeginLine);
         $this->setTestConfiguration([]);
+    }
+
+
+    /**
+     * @param $needle
+     * @param $haystack
+     * @param bool|false $strict
+     *
+     * @return bool
+     */
+    protected function inArrayRecursif($needle, $haystack, $strict = false) {
+        foreach ($haystack as $item) {
+            if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && $this->inArrayRecursif($needle, $item, $strict))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /********** GETTER AND SETTERS ************/
@@ -359,7 +385,18 @@ abstract class LogParser implements LogParserInterface
      */
     public function setHosts($hosts)
     {
-        $this->hosts = $hosts;
+        $finalHosts = [];
+        foreach ($hosts as $host) {
+            if (is_array($host))
+            {
+                $finalDest = $host[Constants::HOST_DEST];
+                $finalHost = $host[Constants::HOST_SOURCE];
+            } else {
+                $finalDest = $finalHost = $host;
+            }
+           $finalHosts[] = [$finalHost, $finalDest];
+        }
+        $this->hosts = $finalHosts;
     }
 
     /**
