@@ -48,6 +48,15 @@ final class Constants
      */
     const REQUEST_HTTP_VERSION = 2;
 
+    /*
+     * Host source to parse
+     */
+    const HOST_SOURCE = 0;
+
+    /*
+     * Host destination to parse
+     */
+    const HOST_DEST = 1;
 
     /*
      * List of all Log2Test path & ressources
