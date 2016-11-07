@@ -15,11 +15,13 @@ class LogParserTest extends \PHPUnit_Framework_TestCase
 
     public static $testConfiguration = [
         'www.shop2tout.com' =>
-            [
+            ['paths' => [
                 '/131-accessoires-pour-pc',
                 '/8296-jeux-modelisme',
                 '/3-accessoires-de-jeux',
-                '/contactez-nous',
+                '/contactez-nous'
+                ],
+                'dest' => 'www.shop2tout.com'
             ]
     ];
 

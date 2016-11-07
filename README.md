@@ -14,7 +14,14 @@ Why exporting your log production's files to tests?
 - Before sending new features in production, you can **easily launch real tests for your pre-production**  
 - Launching all your access log on different browsers with Selenium allows you to **validate Cross Browser Compatibility**  
 
+# Install
 
+```
+git clone https://github.com/ousamabenyounes/log2test 
+composer install
+```
+
+# How to use
 
 **Let's now see how Log2Test works step by step as seen on screencast gif file bellow**
 - At the beginning, **no existing tests** on "generated/curl" directory
@@ -25,16 +32,6 @@ Why exporting your log production's files to tests?
 - Now you can Launch all your curl tests -> run ./bin/phpunit -c phpunit-curl.xml  
 
 <img src="web/img/log2testCurl.gif"></img>
-
-
-
-# Install
-
-```
-git clone https://github.com/ousamabenyounes/log2test 
-composer install
-```
-
 
 # Configuration
 
@@ -49,7 +46,7 @@ Here are all configuration's file properties:
 
 | Property | Type | Description | Default | 
 |:----------:|:-------------:|:-------------:|---------------|
-| host | Array | List of host to parse | |
+| host | Array | List of host to parse [see samples here](#host-sample) | |
 | logFile | String | Path to your acces log File | log/test.log |
 | testStack | String | Available test stack: "phpunit_selenium" or "curl" | curl |
 | beginLine | Int | Begin parsing at line X | 0 |
@@ -72,18 +69,45 @@ Selenium Server (only needed if you choose phpunit_selenium for your test stack)
 
 
 # Test
-Log2test is tested with phpunit dedicated tests  
-Just run following command:
+Log2test is tested with PHPUNIT & Behat
 
 ```
-./bin/phpunit
+./bin/phpunit 
+
+./bin/behat
 ```
 
-Tests are built with travis-ci
+Each commit, a complete build is launched on http://travis-ci.org/ousamabenyounes/log2test/
+
+### Host Sample
+
+You can provide simple array of string like this:
+
+```php
+[
+    "www.shop2tout.com",
+    "www.epitech.fr"
+    ...
+]
+```
+
+You can also provide an array of array (source / destination) 
+
+```php
+[
+    ["www.sourcehost.com", "www.destinationhost.local"],
+    ["www.sourcehost2.com", "www.destinationhost2.local"],
+    ["www.shop2tout.com", "www.shop2tout.local"],
+    ...
+]
+```
+
+The first case is the source host you will be searching on your apache logs  
+The second case is the destiation host wich will be used on generated test  
+By this way, you won't be launching your test on your production website will should affect your real production stats  
+**That's why we recommand you to use the second format**
 
 # Todo
-Add screenshot thumbnail  
 Add Global Reporting  
 Add YellowLabTool option on parsing  
   
-
