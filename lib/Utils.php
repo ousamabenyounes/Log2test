@@ -38,6 +38,9 @@ trait Utils
     public static function contains($str, array $values, $addSpaces = false)
     {
         foreach ($values as $value) {
+            if (is_array($value)) {
+                $value = $value[Constants::HOST_SOURCE];
+            }
             if (true === $addSpaces) {
                 if (stripos($str, Constants::SPACE_CHAR . $value . Constants::SPACE_CHAR . Constants::METHOD_GET) !== false) {
 
