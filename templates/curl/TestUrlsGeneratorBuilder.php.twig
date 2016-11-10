@@ -3,7 +3,8 @@
 namespace Log2Test;
 
 require_once('vendor/autoload.php');
-require_once('../{{ mainHostClassName }}.php');
+
+use Log2TestCurlHost\{{ mainHostClassName }};
 
 {% include 'global_comment.php.twig' %}
 class {{ className }} extends {{ mainHostClassName }}

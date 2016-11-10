@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="../vendor/autoload.php">
+    <testsuites>
+        {% for testId in 1..numberOfTestSuite %}
+    <testsuite name="testSuite{{ testId }}">
+                <directory>./generated/curl/{{ hostName }}/testSuite{{ testId }}</directory>
+            </testsuite>
+        {% endfor %}
+</testsuites>
+
+</phpunit>

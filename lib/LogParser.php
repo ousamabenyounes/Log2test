@@ -233,7 +233,6 @@ abstract class LogParser implements LogParserInterface
     {
         $currentPath = __DIR__ . '/../';
         $generatedFile = 0;
-        $configParser = $this->getConfigParser();
         $this->setCurrentNumberOfFileByTestSuite($this->getCurrentNumberOfFileByTestSuite() + 1);
         $this->generateAllMainTestClass($progressBar);
         foreach ($this->getTestConfiguration() as $hostConfig) {
@@ -246,10 +245,10 @@ abstract class LogParser implements LogParserInterface
                 $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
                 Utils::createDir($hostDirectory);
                 Utils::createDir($hostDirectory . '/' . $testSuitePath);
-                $builder = new TestUrlsGeneratorBuilder();
+                $testUrlGeneratorBuilder = new TestUrlsGeneratorBuilder();
                 $className = $hostCleaned . 'From' . $this->getBeginLine() . 'To' . $this->getEndLine() . 'Test';
-                $builder->setOutputName($className . '.php');
-                $builder->setVariable('className', $className);
+                $testUrlGeneratorBuilder->setOutputName($className . '.php');
+                $testUrlGeneratorBuilder->setVariable('className', $className);
                 $generator = new Generator();
                 $generator->setTemplateDirs(array(
                     $currentPath . 'templates/' . $this->getTestStack(),
@@ -269,20 +268,34 @@ abstract class LogParser implements LogParserInterface
                     'log2testVersion'   => $this->getLog2testVersion(),
                     'mainHostClassName' => $mainHostClassName
                 ));
-                $generator->addBuilder($builder);
+                $generator->addBuilder($testUrlGeneratorBuilder);
                 $generator->writeOnDisk($hostDirectory . '/' . $testSuitePath);
                 $generatedFile = $generatedFile + 1;
-                $progressBar->setMessage('[INFO] ' . $testSuitePath . ' ===> ' . $this->getCurrentNumberOfFileByTestSuite() . ' -> Generating Php File: ' . $className  . '.php');
+                $progressBar->setMessage('[INFO] Generating Php File: ' . $testSuitePath . '/' . $className  . '.php');
                 $generatedFile++;
-                if ($this->getCurrentNumberOfFileByTestSuite() >= $this->getNumberOfFileByTestSuite()) {
-                    $nextTestSuiteId = $this->getTestSuiteId() + 1;
-                    $this->setTestSuiteId($nextTestSuiteId);
-                    $this->setCurrentNumberOfFileByTestSuite(0);
-                    $configParser->updateConfigurationValue(Constants::CURRENT_TEST_SUITE_ID, $nextTestSuiteId);
-                }
+                $this->nextTestSuite($currentPath, $hostDirectory);
             }
         }
+
         return $generatedFile;
+    }
+
+
+    /**
+     * @param string $currentPath
+     * @param string $hostDirectory
+     *
+     * Check if we need to go to next phpunit test suite
+     */
+    public function nextTestSuite($currentPath, $hostDirectory)
+    {
+        if ($this->getCurrentNumberOfFileByTestSuite() >= $this->getNumberOfFileByTestSuite()) {
+            $configParser = $this->getConfigParser();
+            $nextTestSuiteId = $this->getTestSuiteId() + 1;
+            $this->setTestSuiteId($nextTestSuiteId);
+            $this->setCurrentNumberOfFileByTestSuite(0);
+            $configParser->updateConfigurationValue(Constants::CURRENT_TEST_SUITE_ID, $nextTestSuiteId);
+        }
     }
 
 
@@ -291,12 +304,11 @@ abstract class LogParser implements LogParserInterface
      */
     public function generateAllMainTestClass(ProgressBar $progressBar)
     {
-
         $currentPath = __DIR__ . '/../';
         foreach ($this->getTestConfiguration() as $key => $hostConfig) {
             $host = $hostConfig['dest'];
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
+            $hostDirectory = $currentPath .'lib/generated/' . $this->getTestStack() . '/';
             Utils::createDir($hostDirectory);
             $builder = new MainHostGeneratorBuilder();
             $className = $hostCleaned . 'MainHost';
@@ -321,6 +333,47 @@ abstract class LogParser implements LogParserInterface
         }
     }
 
+
+    /**
+     * @param ProgressBar $progress
+     */
+    public function generatePhpunitXmlTestSuite()
+    {
+        $currentPath = __DIR__ . '/../';
+        $phpSuiteFile = $currentPath . Constants::BIN_DIR . 'phpunitSuite.sh';
+        file_put_contents($currentPath . Constants::BIN_DIR . 'phpunitSuite.sh', '#!/usr/bin/env sh'. PHP_EOL);
+        $hosts = $this->getHosts();
+        $configPath = $currentPath .'/' . Constants::CONFIG_PATH;
+        foreach ($hosts as $hostConfig) {
+            $host = $hostConfig[Constants::HOST_DEST];
+            $hostCleaned = ucfirst(Utils::urlToString($host));
+            $phpunitXmlGeneratorBuilder = new PhpunitXmlGeneratorBuilder();
+            $phpunitXmlGeneratorBuilder->setOutputName(Constants::PHPUNIT_TEST_SUITE_FILE);
+            $generator = new Generator();
+            $generator->setTemplateDirs(array(
+                $currentPath . 'templates/' . $this->getTestStack(),
+            ));
+            $generator->setMustOverwriteIfExists(true);
+            $generator->setVariables(array(
+                'numberOfTestSuite' => $this->getTestSuiteId(),
+                'hostName'       => $hostCleaned
+            ));
+            $generator->addBuilder($phpunitXmlGeneratorBuilder);
+            $generator->writeOnDisk($configPath);
+
+            for ($ind = 1; $ind <= $this->getTestSuiteId(); $ind++) {
+                $line = './bin/phpunit -c config/phpunit_test_suite_global.xml --testsuite testSuite' . $ind;
+                file_put_contents($phpSuiteFile, $line . PHP_EOL, FILE_APPEND);
+            }
+        }
+    }
+    /*
+{% for testId in 1..numberOfTestSuite %}
+<testsuite name="testSuite{{ testId }}">
+                <directory>./generated/curl/{{ hostName }}/testSuite{{ testId }}</directory>
+            </testsuite>
+        {{ i }}
+*/
     /**
      * {@inheritDoc}
      */

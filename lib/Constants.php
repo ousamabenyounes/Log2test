@@ -13,6 +13,8 @@ final class Constants
      */
     const TEST_CONFIGURATION_FILE = 'config/tests.yml';
 
+    const PHPUNIT_TEST_SUITE_FILE = 'phpunit_test_suite_global.xml';
+
     /*
      * Parameter Begin file key
      */
