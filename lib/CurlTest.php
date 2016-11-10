@@ -10,7 +10,6 @@ class CurlTest extends \PHPUnit_Framework_TestCase
      * @param $url
      * @param int $timeout
      *
-     * @return array
      */
     public function curlCall($url, $timeout = 10)
     {
@@ -19,7 +18,6 @@ class CurlTest extends \PHPUnit_Framework_TestCase
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
         $data = curl_exec($ch);
-        $info = curl_getinfo($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if (curl_errno($ch))
         {
@@ -31,11 +29,17 @@ class CurlTest extends \PHPUnit_Framework_TestCase
         }
         curl_close($ch);
         $this->assertContains($httpCode, [200], '[Error] url => "' . $url . '"'  . ' HttpStatusCode => "' . $httpCode . '"');
-
-        return [
-            'content' => $data,
-            'statusCode' => $info['http_code']
-        ];
+        unset($data);
     }
 
+    protected function tearDown()
+    {
+        $refl = new \ReflectionObject($this);
+        foreach ($refl->getProperties() as $prop) {
+            if (!$prop->isStatic() && 0 !== strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_')) {
+                $prop->setAccessible(true);
+                $prop->setValue($this, null);
+            }
+        }
+    }
 }

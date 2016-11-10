@@ -12,6 +12,12 @@ class {{ className }} extends CurlTest
     */
     protected $host;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setHost('{{ host }}');
+    }
+
     /**
     * @return string
     */
@@ -28,10 +34,7 @@ class {{ className }} extends CurlTest
         $this->host = $host;
     }
 
-    public function __construct()
-    {
-        $this->setHost('{{ host }}');
-    }
+
 
 {% if true == enabledScreenshot %}
     /**
@@ -39,7 +42,18 @@ class {{ className }} extends CurlTest
     * @param string $filename
     */
     public function screenshot($filename) {
-    // implements
+        // implements
     }
 {% endif %}
+
+    protected function tearDown()
+    {
+        $refl = new \ReflectionObject($this);
+        foreach ($refl->getProperties() as $prop) {
+            if (!$prop->isStatic() && 0 !== strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_')) {
+                $prop->setAccessible(true);
+                $prop->setValue($this, null);
+            }
+        }
+    }
 }

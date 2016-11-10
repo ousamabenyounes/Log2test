@@ -136,6 +136,15 @@ abstract class LogParser implements LogParserInterface
 
 
     /**
+    /
+     * Number of file for each PhpunitTestSuite
+     *
+     * @var int
+     */
+    protected $numberOfFileByTestSuite;
+
+
+    /**
      * LogParser constructor.
      * @param ConfigParser $configParser
      * @param \SplFileObject $splFile
@@ -158,6 +167,7 @@ abstract class LogParser implements LogParserInterface
         $this->setEncodedUrls($configParser->getValueFromKey('encodedUrls'));
         $this->setEnabledScreenshot($configParser->getValueFromKey('enabledScreenshot'));
         $this->setLog2testVersion($configParser->getValueFromKey('log2testVersion'));
+        $this->setNumberOfFileByTestSuite($configParser->getValueFromKey('numberOfFileByTestSuite'));
 
         // Reset current seek cursor to begin Line
         $splFile->seek($configParser->getValueFromKey('beginLine'));
@@ -202,21 +212,26 @@ abstract class LogParser implements LogParserInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}|¬|LLL
      */
     public function generateAllTests(ProgressBar $progressBar)
     {
         $currentPath = __DIR__ . '/../';
         $generatedFile = 0;
+        $numberOfFileByTestSuite = 0;
+        $testSuiteId = 1;
         $this->generateAllMainTestClass($progressBar);
         foreach ($this->getTestConfiguration() as $hostConfig) {
+            $numberOfFileByTestSuite++;
             $paths = $hostConfig['paths'];
+            $testSuitePath = 'testSuite' . $testSuiteId;
             $host = $hostConfig['dest'];
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
                 $mainHostClassName = $hostCleaned . 'MainHost';
                 $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
                 Utils::createDir($hostDirectory);
+                Utils::createDir($hostDirectory . '/' . $testSuitePath);
                 $builder = new TestUrlsGeneratorBuilder();
                 $className = $hostCleaned . 'From' . $this->getBeginLine() . 'To' . $this->getEndLine() . 'Test';
                 $builder->setOutputName($className . '.php');
@@ -241,10 +256,14 @@ abstract class LogParser implements LogParserInterface
                     'mainHostClassName' => $mainHostClassName
                 ));
                 $generator->addBuilder($builder);
-                $generator->writeOnDisk($hostDirectory);
+                $generator->writeOnDisk($hostDirectory . '/' . $testSuitePath);
                 $generatedFile = $generatedFile + 1;
-                $progressBar->setMessage('[INFO] Generating Php File: ' . $className  . '.php');
+                $progressBar->setMessage('[INFO] TestSuite' . $testSuiteId . ' ' . $numberOfFileByTestSuite . ' -> Generating Php File: ' . $className  . '.php');
                 $generatedFile++;
+                if ($numberOfFileByTestSuite >= $this->getNumberOfFileByTestSuite()) {
+                    $testSuiteId++;
+                    $numberOfFileByTestSuite = 0;
+                }
             }
         }
         return $generatedFile;
@@ -621,6 +640,22 @@ abstract class LogParser implements LogParserInterface
     public function setLog2testVersion($log2testVersion)
     {
         $this->log2testVersion = $log2testVersion;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumberOfFileByTestSuite()
+    {
+        return $this->numberOfFileByTestSuite;
+    }
+
+    /**
+     * @param int $numberOfFileByTestSuite
+     */
+    public function setNumberOfFileByTestSuite($numberOfFileByTestSuite)
+    {
+        $this->numberOfFileByTestSuite = $numberOfFileByTestSuite;
     }
 }
 
