@@ -136,12 +136,25 @@ abstract class LogParser implements LogParserInterface
 
 
     /**
-    /
-     * Number of file for each PhpunitTestSuite
+     * Number of file for each PhpunitTestSuite - from config file
      *
      * @var int
      */
     protected $numberOfFileByTestSuite;
+
+    /**
+     * Number of file for current PhpunitTestSuite
+     *
+     * @var int
+     */
+    protected $currentNumberOfFileByTestSuite;
+
+    /**
+     * Current Phpunit Test Suite ID
+     *
+     * @var int
+     */
+    protected $testSuiteId;
 
 
     /**
@@ -152,6 +165,8 @@ abstract class LogParser implements LogParserInterface
      */
     public function __construct(ConfigParser $configParser, \SplFileObject $splFile, $logFile)
     {
+        $this->setCurrentNumberOfFileByTestSuite(0);
+        $this->setTestSuiteId($configParser->getValueFromKey('currentTestSuiteId'));
         $this->setConfigParser($configParser);
         $this->setLogFile($logFile);
         $this->setSplFileObject($splFile);
@@ -218,13 +233,12 @@ abstract class LogParser implements LogParserInterface
     {
         $currentPath = __DIR__ . '/../';
         $generatedFile = 0;
-        $numberOfFileByTestSuite = 0;
-        $testSuiteId = 1;
+        $configParser = $this->getConfigParser();
+        $this->setCurrentNumberOfFileByTestSuite($this->getCurrentNumberOfFileByTestSuite() + 1);
         $this->generateAllMainTestClass($progressBar);
         foreach ($this->getTestConfiguration() as $hostConfig) {
-            $numberOfFileByTestSuite++;
             $paths = $hostConfig['paths'];
-            $testSuitePath = 'testSuite' . $testSuiteId;
+            $testSuitePath = 'testSuite' . $this->getTestSuiteId();
             $host = $hostConfig['dest'];
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
@@ -258,11 +272,13 @@ abstract class LogParser implements LogParserInterface
                 $generator->addBuilder($builder);
                 $generator->writeOnDisk($hostDirectory . '/' . $testSuitePath);
                 $generatedFile = $generatedFile + 1;
-                $progressBar->setMessage('[INFO] TestSuite' . $testSuiteId . ' ' . $numberOfFileByTestSuite . ' -> Generating Php File: ' . $className  . '.php');
+                $progressBar->setMessage('[INFO] ' . $testSuitePath . ' ===> ' . $this->getCurrentNumberOfFileByTestSuite() . ' -> Generating Php File: ' . $className  . '.php');
                 $generatedFile++;
-                if ($numberOfFileByTestSuite >= $this->getNumberOfFileByTestSuite()) {
-                    $testSuiteId++;
-                    $numberOfFileByTestSuite = 0;
+                if ($this->getCurrentNumberOfFileByTestSuite() >= $this->getNumberOfFileByTestSuite()) {
+                    $nextTestSuiteId = $this->getTestSuiteId() + 1;
+                    $this->setTestSuiteId($nextTestSuiteId);
+                    $this->setCurrentNumberOfFileByTestSuite(0);
+                    $configParser->updateConfigurationValue(Constants::CURRENT_TEST_SUITE_ID, $nextTestSuiteId);
                 }
             }
         }
@@ -657,6 +673,40 @@ abstract class LogParser implements LogParserInterface
     {
         $this->numberOfFileByTestSuite = $numberOfFileByTestSuite;
     }
+
+
+    /**
+     * @return int
+     */
+    public function getCurrentNumberOfFileByTestSuite()
+    {
+        return $this->currentNumberOfFileByTestSuite;
+    }
+
+    /**
+     * @param int $currentNumberOfFileByTestSuite
+     */
+    public function setCurrentNumberOfFileByTestSuite($currentNumberOfFileByTestSuite)
+    {
+        $this->currentNumberOfFileByTestSuite = $currentNumberOfFileByTestSuite;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTestSuiteId()
+    {
+        return $this->testSuiteId;
+    }
+
+    /**
+     * @param int $testSuiteId
+     */
+    public function setTestSuiteId($testSuiteId)
+    {
+        $this->testSuiteId = $testSuiteId;
+    }
+
 }
 
 

@@ -19,6 +19,11 @@ final class Constants
     const BEGIN_LINE = 'beginLine';
 
     /*
+     * Parameter Current Test SuiteId key
+     */
+    const CURRENT_TEST_SUITE_ID = 'currentTestSuiteId';
+
+    /*
      * Get Method
      */
     const METHOD_GET = 'GET';
