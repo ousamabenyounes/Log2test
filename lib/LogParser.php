@@ -337,7 +337,7 @@ abstract class LogParser implements LogParserInterface
     /**
      * @param ProgressBar $progress
      */
-    public function generatePhpunitXmlTestSuite()
+    public function generatePhpunitTestSuiteLauncher()
     {
         $currentPath = __DIR__ . '/../';
         $hosts = $this->getHosts();

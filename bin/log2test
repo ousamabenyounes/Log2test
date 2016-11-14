@@ -55,5 +55,5 @@ if ('generate' === $mode || 'all' === $mode) {
 }
 
 if ('execute' === $mode || 'all' === $mode) {
-    $logParser->generatePhpunitXmlTestSuite();
+    $logParser->generatePhpunitTestSuiteLauncher();
 }
