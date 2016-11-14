@@ -242,7 +242,7 @@ abstract class LogParser implements LogParserInterface
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
                 $mainHostClassName = $hostCleaned . 'MainHost';
-                $hostDirectory = $currentPath .'generated/' . $this->getTestStack() . '/' . $hostCleaned;
+                $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned;
                 Utils::createDir($hostDirectory);
                 Utils::createDir($hostDirectory . '/' . $testSuitePath);
                 $testUrlGeneratorBuilder = new TestUrlsGeneratorBuilder();
@@ -308,7 +308,7 @@ abstract class LogParser implements LogParserInterface
         foreach ($this->getTestConfiguration() as $key => $hostConfig) {
             $host = $hostConfig['dest'];
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            $hostDirectory = $currentPath .'lib/generated/' . $this->getTestStack() . '/';
+            $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/';
             Utils::createDir($hostDirectory);
             $builder = new MainHostGeneratorBuilder();
             $className = $hostCleaned . 'MainHost';
@@ -340,13 +340,13 @@ abstract class LogParser implements LogParserInterface
     public function generatePhpunitXmlTestSuite()
     {
         $currentPath = __DIR__ . '/../';
-        $phpSuiteFile = $currentPath . Constants::BIN_DIR . 'phpunitSuite.sh';
-        file_put_contents($currentPath . Constants::BIN_DIR . 'phpunitSuite.sh', '#!/usr/bin/env sh'. PHP_EOL);
         $hosts = $this->getHosts();
-        $configPath = $currentPath .'/' . Constants::CONFIG_PATH;
         foreach ($hosts as $hostConfig) {
             $host = $hostConfig[Constants::HOST_DEST];
             $hostCleaned = ucfirst(Utils::urlToString($host));
+            $hostTestPath = $currentPath . Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned . '/';
+            $phpSuiteFile = $hostTestPath . 'phpunitSuite.sh';
+            file_put_contents($phpSuiteFile, '#!/usr/bin/env sh'. PHP_EOL);
             $phpunitXmlGeneratorBuilder = new PhpunitXmlGeneratorBuilder();
             $phpunitXmlGeneratorBuilder->setOutputName(Constants::PHPUNIT_TEST_SUITE_FILE);
             $generator = new Generator();
@@ -359,21 +359,15 @@ abstract class LogParser implements LogParserInterface
                 'hostName'       => $hostCleaned
             ));
             $generator->addBuilder($phpunitXmlGeneratorBuilder);
-            $generator->writeOnDisk($configPath);
+            $generator->writeOnDisk($hostTestPath);
 
             for ($ind = 1; $ind <= $this->getTestSuiteId(); $ind++) {
-                $line = './bin/phpunit -c config/phpunit_test_suite_global.xml --testsuite testSuite' . $ind;
+                $line = './bin/phpunit -c ' . Constants::PHPUNIT_TEST_SUITE_FILE . ' --testsuite testSuite' . $ind;
                 file_put_contents($phpSuiteFile, $line . PHP_EOL, FILE_APPEND);
             }
         }
     }
-    /*
-{% for testId in 1..numberOfTestSuite %}
-<testsuite name="testSuite{{ testId }}">
-                <directory>./generated/curl/{{ hostName }}/testSuite{{ testId }}</directory>
-            </testsuite>
-        {{ i }}
-*/
+
     /**
      * {@inheritDoc}
      */
