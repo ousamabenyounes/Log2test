@@ -245,10 +245,10 @@ abstract class LogParser implements LogParserInterface
                 $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned;
                 Utils::createDir($hostDirectory);
                 Utils::createDir($hostDirectory . '/' . $testSuitePath);
-                $testUrlGeneratorBuilder = new TestUrlsGeneratorBuilder();
+                $testUrlBuilder = new TestUrlsBuilder();
                 $className = $hostCleaned . 'From' . $this->getBeginLine() . 'To' . $this->getEndLine() . 'Test';
-                $testUrlGeneratorBuilder->setOutputName($className . '.php');
-                $testUrlGeneratorBuilder->setVariable('className', $className);
+                $testUrlBuilder->setOutputName($className . '.php');
+                $testUrlBuilder->setVariable('className', $className);
                 $generator = new Generator();
                 $generator->setTemplateDirs(array(
                     $currentPath . 'templates/' . $this->getTestStack(),
@@ -268,7 +268,7 @@ abstract class LogParser implements LogParserInterface
                     'log2testVersion'   => $this->getLog2testVersion(),
                     'mainHostClassName' => $mainHostClassName
                 ));
-                $generator->addBuilder($testUrlGeneratorBuilder);
+                $generator->addBuilder($testUrlBuilder);
                 $generator->writeOnDisk($hostDirectory . '/' . $testSuitePath);
                 $generatedFile = $generatedFile + 1;
                 $progressBar->setMessage('[INFO] Generating Php File: ' . $testSuitePath . '/' . $className  . '.php');
@@ -310,7 +310,7 @@ abstract class LogParser implements LogParserInterface
             $hostCleaned = ucfirst(Utils::urlToString($host));
             $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/';
             Utils::createDir($hostDirectory);
-            $builder = new MainHostGeneratorBuilder();
+            $builder = new MainHostBuilder();
             $className = $hostCleaned . 'MainHost';
             $builder->setOutputName($className . '.php');
             $builder->setVariable('className', $className);
@@ -344,27 +344,20 @@ abstract class LogParser implements LogParserInterface
         foreach ($hosts as $hostConfig) {
             $host = $hostConfig[Constants::HOST_DEST];
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            $hostTestPath = $currentPath . Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned . '/';
-            $phpSuiteFile = $hostTestPath . 'phpunitSuite.sh';
-            file_put_contents($phpSuiteFile, '#!/usr/bin/env sh'. PHP_EOL);
-            $phpunitXmlGeneratorBuilder = new PhpunitXmlGeneratorBuilder();
-            $phpunitXmlGeneratorBuilder->setOutputName(Constants::PHPUNIT_TEST_SUITE_FILE);
+            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned . '/';
             $generator = new Generator();
             $generator->setTemplateDirs(array(
                 $currentPath . 'templates/' . $this->getTestStack(),
             ));
             $generator->setMustOverwriteIfExists(true);
+            $phpunitLauncherBuilder = new PhpunitLauncherBuilder();
+            $phpunitLauncherBuilder->setOutputName(Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
             $generator->setVariables(array(
                 'numberOfTestSuite' => $this->getTestSuiteId(),
-                'hostName'       => $hostCleaned
+                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned
             ));
-            $generator->addBuilder($phpunitXmlGeneratorBuilder);
-            $generator->writeOnDisk($hostTestPath);
-
-            for ($ind = 1; $ind <= $this->getTestSuiteId(); $ind++) {
-                $line = './bin/phpunit -c ' . Constants::PHPUNIT_TEST_SUITE_FILE . ' --testsuite testSuite' . $ind;
-                file_put_contents($phpSuiteFile, $line . PHP_EOL, FILE_APPEND);
-            }
+            $generator->addBuilder($phpunitLauncherBuilder);
+            $generator->writeOnDisk($currentPath . $hostTestPath);
         }
     }
 

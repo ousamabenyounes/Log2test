@@ -4,6 +4,6 @@ namespace Log2Test;
 
 use TwigGenerator\Builder\BaseBuilder;
 
-class PhpunitXmlGeneratorBuilder extends BaseBuilder
+class TestUrlsBuilder extends BaseBuilder
 {
 }

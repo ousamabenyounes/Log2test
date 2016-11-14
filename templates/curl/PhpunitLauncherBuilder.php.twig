@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+{% for testId in 1..numberOfTestSuite %}./bin/phpunit  {{ phpunitSuitePath }}/testSuite{{ testId }}
+{% endfor %}
