@@ -16,11 +16,19 @@ trait Utils
     public static function urlToString($url)
     {
         $cleanedString = str_replace(
-            array(' ', 'http://', 'www.', '-'), '',
+            array('http://', 'www.'), 
+            '', 
             $url
         );
-        $cleanedString = preg_replace('/[^A-Za-z0-9\-]/', '', $cleanedString);
 
+        /**
+          * http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class
+          * A valid class name starts with a letter or underscore, followed by any number of letters, numbers, or underscores
+          *
+          * To replace all characters not match : can use a negated character class (using ^ at the beginning of the class)
+          */
+
+        $cleanedString = preg_replace('/[^a-zA-Z_\\x7f-\\xff][^a-zA-Z0-9_\\x7f-\\xff]*/', '_', 'dev-webservice-caradisiac.yteboul.caradisiac.dev', -1);
         return $cleanedString;
     }
 
