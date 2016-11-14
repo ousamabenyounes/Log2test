@@ -16,8 +16,7 @@ trait Utils
     public static function urlToString($url)
     {
         $cleanedString = str_replace(
-            array(' ', 'http://', 'www.'),
-            array('-', '', ''),
+            array(' ', 'http://', 'www.', '-'), '',
             $url
         );
         $cleanedString = preg_replace('/[^A-Za-z0-9\-]/', '', $cleanedString);

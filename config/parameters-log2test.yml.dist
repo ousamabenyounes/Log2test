@@ -13,3 +13,5 @@ parameters:
     encodedUrls: false
     enabledScreenshot: true
     log2testVersion: V1.2
+    currentTestSuiteId: 1
+    numberOfFileByTestSuite: 30

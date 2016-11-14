@@ -13,10 +13,18 @@ final class Constants
      */
     const TEST_CONFIGURATION_FILE = 'config/tests.yml';
 
+    const PHPUNIT_TEST_SUITE_XML_FILE = 'phpunit_test_suite_global.xml';
+    const PHPUNIT_LAUNCHER_SHELL_FILE = 'phpunitLauncher.sh';
+
     /*
      * Parameter Begin file key
      */
     const BEGIN_LINE = 'beginLine';
+
+    /*
+     * Parameter Current Test SuiteId key
+     */
+    const CURRENT_TEST_SUITE_ID = 'currentTestSuiteId';
 
     /*
      * Get Method

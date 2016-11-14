@@ -61,6 +61,7 @@ class ConfigParser
         $config = $this->getConfigCache();
         $config['parameters'][$key] = $value;
         Utils::saveYamlContent(Constants::PARAMETER_FILE, $config);
+        $this->setConfigCache($config);
     }
 
 }
