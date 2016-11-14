@@ -28,7 +28,7 @@ trait Utils
           * To replace all characters not match : can use a negated character class (using ^ at the beginning of the class)
           */
 
-        $cleanedString = preg_replace('/[^a-zA-Z_\\x7f-\\xff][^a-zA-Z0-9_\\x7f-\\xff]*/', '_', 'dev-webservice-caradisiac.yteboul.caradisiac.dev', -1);
+        $cleanedString = preg_replace('/[^a-zA-Z_\x7f-\xff][^a-zA-Z0-9_\x7f-\xff]*/', '', $cleanedString, -1);
         return $cleanedString;
     }
 
