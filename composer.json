@@ -53,7 +53,9 @@
 
     "autoload": {
         "psr-4" : {
-            "Log2Test\\" : "lib/"
+            "Log2Test\\" : "lib/",
+            "Log2Test\\Generated\\Curl\\" : "generated/curl/",
+            "Log2Test\\Generated\\Selenium\\" : "generated/phpunit_selenium/"
         }
     },
     "config":  {

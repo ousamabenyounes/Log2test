@@ -15,56 +15,45 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 
+
 $output = new ConsoleOutput();
 $output->setFormatter(new OutputFormatter(true));
 
+// Parsing parameters
+$options = getopt("m:");
+$mode = $options['m'];
 
 $configParser = new ConfigParser();
-$logFile = $configParser->getValueFromKey('logFile');
-$splFile = new \SplFileObject($logFile, 'r');
-$splFile->seek(PHP_INT_MAX);
-$nbLine = $splFile->key() + 1;
-
-// create a new progress bar (50 units)
-$progress = new ProgressBar($output, $nbLine);
-$progress->setOverwrite(true);
-//$progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed% %message%');
-$progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
-$progress->setOverwrite(true);
-
-// start and displays the progress bar
-$progress->setMessage('Task starts');
-$progress->start();
-$nbFileGenerated = 0;
-$progress->setOverwrite(true);
-
 $logParser = LogParserFactory::create();
 
-$progress->setProgress($logParser->getBeginLine());
-/*`
-$progress->setMessage('eeee');
-$progress->advance();
+if ('generate' === $mode || 'all' === $mode) {
+    $logFile = $configParser->getValueFromKey('logFile');
+    $splFile = new \SplFileObject($logFile, 'r');
+    $splFile->seek(PHP_INT_MAX);
+    $nbLine = $splFile->key() + 1;
+    $progress = new ProgressBar($output, $nbLine);
+    $progress->setOverwrite(true);
+    $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
+    $progress->setOverwrite(true);
+    $progress->setMessage('Task starts');
+    $progress->start();
+    $nbFileGenerated = 0;
+    $progress->setOverwrite(true);
+    $progress->setProgress($logParser->getBeginLine());
 
-sleep(2);
-$progress->setMessage('ffff');
-$progress->advance();
-sleep(3);
-die;
-*/
-while (1) {
-
-    $parseNextLine = $logParser->parse();
-
-    $nbFileGenerated += $logParser->generateAllTests($progress);
-    $logParser->saveTestConfiguration();
-    $progress->advance($logParser->getNumberOfLine());
-    if (false === $parseNextLine)
-    {
-        break;
+    while (1) {
+        $parseNextLine = $logParser->parse();
+        $nbFileGenerated += $logParser->generateAllTests($progress);
+        $logParser->saveTestConfiguration();
+        $progress->advance($logParser->getNumberOfLine());
+        if (false === $parseNextLine)
+        {
+            break;
+        }
     }
+    $progress->finish();
 }
 
-//$progress->setMessage(PHP_EOL . '[INFO] Total: ' . $nbFileGenerated . ' tests file generated');
-
-// ensure that the progress bar is at 100%
-$progress->finish();
+if ('execute' === $mode || 'all' === $mode) {
+    $logParser->generatePhpunitTestSuiteLauncher();
+}

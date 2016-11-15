@@ -3,7 +3,8 @@
 namespace Log2Test;
 
 require_once('vendor/autoload.php');
-require_once('{{ mainHostClassName }}.php');
+
+use Log2Test\Generated\Curl\{{ mainHostClassName }};
 
 {% include 'global_comment.php.twig' %}
 class {{ className }} extends {{ mainHostClassName }}
@@ -22,4 +23,8 @@ class {{ className }} extends {{ mainHostClassName }}
     }
 {% endfor %}
 
+    protected function tearDown()
+    {
+        parent::tearDown();
+    }
 }
