@@ -14,6 +14,11 @@
             "name": "Ousama Ben Younes",
             "email": "benyounes.ousama@gmail.com",
             "role": "lead"
+        }, 
+        {
+            "name": "Youval Teboul",
+            "email": "youval.teboul@gmail.com",
+            "role": "developer"
         }
     ],
     "bin": [
