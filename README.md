@@ -59,6 +59,7 @@ Here are all configuration's file properties:
 | pauseBetweenTests | Int | Add a pause between all generated tests | 0 |
 | encodedUrls | Boolean | Allows you to encode all parsed urls | true |
 | enabledScreenshot | Boolean | Take screenshot on each test | false |
+| testResultFormat | string | Test result format "xml" or "json" | xml |
 
 
 
