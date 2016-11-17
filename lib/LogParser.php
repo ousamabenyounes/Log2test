@@ -157,6 +157,15 @@ abstract class LogParser implements LogParserInterface
     protected $testSuiteId;
 
 
+
+    /**
+     * Current Phpunit Test Result format
+     *
+     * @var string
+     */
+    protected $testResultFormat;
+
+
     /**
      * LogParser constructor.
      * @param ConfigParser $configParser
@@ -183,6 +192,7 @@ abstract class LogParser implements LogParserInterface
         $this->setEnabledScreenshot($configParser->getValueFromKey('enabledScreenshot'));
         $this->setLog2testVersion($configParser->getValueFromKey('log2testVersion'));
         $this->setNumberOfFileByTestSuite($configParser->getValueFromKey('numberOfFileByTestSuite'));
+        $this->setTestResultFormat($configParser->getValueFromKey('testResultFormat'));
 
         // Reset current seek cursor to begin Line
         $splFile->seek($configParser->getValueFromKey('beginLine'));
@@ -341,6 +351,7 @@ abstract class LogParser implements LogParserInterface
     {
         $currentPath = __DIR__ . '/../';
         $hosts = $this->getHosts();
+
         foreach ($hosts as $hostConfig) {
             $host = $hostConfig[Constants::HOST_DEST];
             $hostCleaned = ucfirst(Utils::urlToString($host));
@@ -354,7 +365,8 @@ abstract class LogParser implements LogParserInterface
             $phpunitLauncherBuilder->setOutputName(Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
             $generator->setVariables(array(
                 'numberOfTestSuite' => $this->getTestSuiteId(),
-                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned
+                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned,
+                'testResultFormat'  => $this->getTestResultFormat(),
             ));
             $generator->addBuilder($phpunitLauncherBuilder);
             $generator->writeOnDisk($currentPath . $hostTestPath);
@@ -745,6 +757,22 @@ abstract class LogParser implements LogParserInterface
     public function setTestSuiteId($testSuiteId)
     {
         $this->testSuiteId = $testSuiteId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTestResultFormat()
+    {
+        return $this->testResultFormat;
+    }
+
+    /**
+     * @param string $testResultFormat
+     */
+    public function setTestResultFormat($testResultFormat)
+    {
+        $this->testResultFormat = $testResultFormat;
     }
 
 }
