@@ -21,12 +21,12 @@ $output->setFormatter(new OutputFormatter(true));
 
 // Parsing parameters
 $options = getopt("m:");
-$mode = $options['m'];
+$mode = (isset($options['m']) ? $options['m'] : '');
 
 $configParser = new ConfigParser();
 $logParser = LogParserFactory::create();
 
-if ('generate' === $mode || 'all' === $mode) {
+if ('generate' === $mode || '' === $mode) {
     $logFile = $configParser->getValueFromKey('logFile');
     $splFile = new \SplFileObject($logFile, 'r');
     $splFile->seek(PHP_INT_MAX);
@@ -54,6 +54,7 @@ if ('generate' === $mode || 'all' === $mode) {
     $progress->finish();
 }
 
-if ('execute' === $mode || 'all' === $mode) {
+if ('execute' === $mode || '' === $mode) {
     $logParser->generatePhpunitTestSuiteLauncher();
+    $logParser->execute();
 }

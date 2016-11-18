@@ -5,7 +5,7 @@ namespace Log2Test;
 
 use Symfony\Component\Console\Helper\ProgressBar;
 use TwigGenerator\Builder\Generator;
-use Log2Test\Utils;
+use Symfony\Component\Process\Process;
 
 abstract class LogParser implements LogParserInterface
 {
@@ -371,6 +371,27 @@ abstract class LogParser implements LogParserInterface
             $generator->addBuilder($phpunitLauncherBuilder);
             $generator->writeOnDisk($currentPath . $hostTestPath);
         }
+    }
+
+    public function execute()
+    {
+        $hosts = $this->getHosts();
+
+        foreach ($hosts as $hostConfig) {
+            $host = $hostConfig[Constants::HOST_DEST];
+            $hostCleaned = ucfirst(Utils::urlToString($host));
+            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned . '/';
+
+            $process = new Process($hostTestPath . Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
+            $process->run(function ($type, $buffer) {
+                if (Process::ERR === $type) {
+                    echo 'ERR > ' . $buffer;
+                } else {
+                    echo $buffer;
+                }
+            });
+        }
+
     }
 
     /**
