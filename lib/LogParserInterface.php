@@ -2,7 +2,6 @@
 
 namespace Log2Test;
 
-use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Interface implemented by parser classes.
@@ -15,11 +14,6 @@ interface LogParserInterface
      * Converts production logs into selenium test
      */
     public function parse();
-
-    /**
-     * Generate All Tests By Host obtained by parsing the log file
-     */
-    public function generateAllTests(ProgressBar $progressBar);
 
     /**
      * Parse one log line content and search if one of our host is present
@@ -38,9 +32,5 @@ interface LogParserInterface
      */
     public function addTestToConfiguration($host, $completePath);
 
-    /**
-     * At the end of the process we save all our configuration on a Yaml File
-     *
-     */
-    public function saveTestConfiguration();
+
 }
