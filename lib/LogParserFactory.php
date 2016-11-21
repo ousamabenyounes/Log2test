@@ -17,7 +17,7 @@ class LogParserFactory
         $logFile = $configParser->getValueFromKey('logFile');
         $splFile = new \SplFileObject($logFile);
 
-        return new $logParserClass($configParser, $splFile, $logFile);
+        return new $logParserClass($configParser, $splFile);
     }
 
 }
