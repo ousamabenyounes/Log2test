@@ -7,12 +7,6 @@ namespace Log2Test;
 abstract class LogParser implements LogParserInterface
 {
 
-    /**
-     * log file path
-     *
-     * @var string
-     */
-    protected $logFile;
 
     /**
      * testStack => can be Selenium or Curl
@@ -127,12 +121,10 @@ abstract class LogParser implements LogParserInterface
      * LogParser constructor.
      * @param ConfigParser $configParser
      * @param \SplFileObject $splFile
-     * @param String $logFile
      */
-    public function __construct(ConfigParser $configParser, \SplFileObject $splFile, $logFile)
+    public function __construct(ConfigParser $configParser, \SplFileObject $splFile)
     {
         $this->setConfigParser($configParser);
-        $this->setLogFile($logFile);
         $this->setSplFileObject($splFile);
         $this->setTestStack($configParser->getValueFromKey('testStack'));
         $this->setHosts($configParser->getValueFromKey('hosts'));
@@ -228,22 +220,6 @@ abstract class LogParser implements LogParserInterface
     }
 
     /********** GETTER AND SETTERS ************/
-
-    /**
-     * @return string
-     */
-    public function getLogFile()
-    {
-        return $this->logFile;
-    }
-
-    /**
-     * @param string $logFile
-     */
-    public function setLogFile($logFile)
-    {
-        $this->logFile = $logFile;
-    }
 
     /**
      * @return string

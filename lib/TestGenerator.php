@@ -3,12 +3,9 @@
 namespace Log2Test;
 
 
-use phpDocumentor\Reflection\Types\Boolean;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use TwigGenerator\Builder\Generator;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -206,7 +203,8 @@ class TestGenerator implements TestGeneratorInterface
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
                 $mainHostClassName = $hostCleaned . 'MainHost';
-                $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned;
+                $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR .
+                    $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned;
                 Utils::createDir($hostDirectory);
                 Utils::createDir($hostDirectory . DIRECTORY_SEPARATOR . $testSuitePath);
                 $testUrlBuilder = new TestUrlsBuilder();
@@ -235,7 +233,8 @@ class TestGenerator implements TestGeneratorInterface
                 $generator->addBuilder($testUrlBuilder);
                 $generator->writeOnDisk($hostDirectory . DIRECTORY_SEPARATOR . $testSuitePath);
                 $generatedFile = $generatedFile + 1;
-                $progressBar->setMessage('[INFO] Generating Php File: ' . $testSuitePath . DIRECTORY_SEPARATOR . $className  . '.php');
+                $progressBar->setMessage('[INFO] Generating Php File: ' . $testSuitePath .
+                    DIRECTORY_SEPARATOR . $className  . '.php');
                 $generatedFile++;
                 $this->nextTestSuite($currentPath, $hostDirectory);
             }
@@ -284,7 +283,8 @@ class TestGenerator implements TestGeneratorInterface
         foreach ($this->getTestConfiguration() as $key => $hostConfig) {
             $host = $hostConfig['dest'];
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR;
+            $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR .
+                $this->getTestStack() . DIRECTORY_SEPARATOR;
             Utils::createDir($hostDirectory);
             $builder = new MainHostBuilder();
             $className = $hostCleaned . 'MainHost';
@@ -321,7 +321,8 @@ class TestGenerator implements TestGeneratorInterface
         foreach ($hosts as $hostConfig) {
             $host = $hostConfig[Constants::HOST_DEST];
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned . DIRECTORY_SEPARATOR;
+            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() .
+                DIRECTORY_SEPARATOR . $hostCleaned . DIRECTORY_SEPARATOR;
             $generator = new Generator();
             $generator->setTemplateDirs(array(
                 $currentPath . 'templates/' . $this->getTestStack(),
@@ -331,7 +332,8 @@ class TestGenerator implements TestGeneratorInterface
             $phpunitLauncherBuilder->setOutputName(Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
             $generator->setVariables(array(
                 'numberOfTestSuite' => $this->getTestSuiteId(),
-                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned,
+                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR .
+                    $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned,
                 'testResultFormat'  => $this->getTestResultFormat(),
             ));
             $generator->addBuilder($phpunitLauncherBuilder);
@@ -344,7 +346,7 @@ class TestGenerator implements TestGeneratorInterface
      * @param ConsoleOutput $output
      * @param bool $printInfo
      */
-    public function execute(ConsoleOutput $output, $printInfo = false)
+    public function execute(ConsoleOutput $output, $printInfo = true)
     {
         $io = new SymfonyStyle(new ArrayInput([]), $output);
         $io->title('Log2test: Running tests...');
@@ -353,8 +355,11 @@ class TestGenerator implements TestGeneratorInterface
         foreach ($hosts as $hostConfig) {
             $host = $hostConfig[Constants::HOST_DEST];
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned . DIRECTORY_SEPARATOR;
+            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR .
+                $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned . DIRECTORY_SEPARATOR;
             $process = new Process($hostTestPath . Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
+            $process->setTimeout(null);
+            $process->setIdleTimeout(null);
             $process->run(function ($type, $buffer) use($printInfo, $io) {
                 if (Process::ERR === $type) {
                     $io->error($buffer);
@@ -365,7 +370,8 @@ class TestGenerator implements TestGeneratorInterface
                 }
             });
         }
-        $io->success('Finished running all phpunit Test Suites -> Publishing "' . $this->getTestResultFormat() . '" results on each phpunit test Suite directory');
+        $io->success('Finished running all phpunit Test Suites -> Publishing "' .
+            $this->getTestResultFormat() . '" results on each phpunit test Suite directory');
     }
 
 

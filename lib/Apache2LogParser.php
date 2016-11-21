@@ -22,9 +22,9 @@ class Apache2LogParser extends LogParser
     /*
      * {@inheritDoc}
      */
-    public function __construct(ConfigParser $configParser, \SplFileObject $splFile, $logFile)
+    public function __construct(ConfigParser $configParser, \SplFileObject $splFile)
     {
-        parent::__construct($configParser, $splFile, $logFile);
+        parent::__construct($configParser, $splFile);
         $this->setLogFormat($configParser->getValueFromKey('logFormat'));
         $this->setKassnerLogParser(new \Kassner\LogParser\LogParser($this->getLogFormat()));
     }
