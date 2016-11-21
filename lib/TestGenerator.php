@@ -3,9 +3,15 @@
 namespace Log2Test;
 
 
+use phpDocumentor\Reflection\Types\Boolean;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use TwigGenerator\Builder\Generator;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TestGenerator implements TestGeneratorInterface
 {
@@ -200,9 +206,9 @@ class TestGenerator implements TestGeneratorInterface
             if (0 !== sizeof($paths)) {
                 $hostCleaned = ucfirst(Utils::urlToString($host));
                 $mainHostClassName = $hostCleaned . 'MainHost';
-                $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned;
+                $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned;
                 Utils::createDir($hostDirectory);
-                Utils::createDir($hostDirectory . '/' . $testSuitePath);
+                Utils::createDir($hostDirectory . DIRECTORY_SEPARATOR . $testSuitePath);
                 $testUrlBuilder = new TestUrlsBuilder();
                 $className = $hostCleaned . 'From' . $this->getBeginLine() . 'To' . $this->getEndLine() . 'Test';
                 $testUrlBuilder->setOutputName($className . '.php');
@@ -227,9 +233,9 @@ class TestGenerator implements TestGeneratorInterface
                     'mainHostClassName' => $mainHostClassName
                 ));
                 $generator->addBuilder($testUrlBuilder);
-                $generator->writeOnDisk($hostDirectory . '/' . $testSuitePath);
+                $generator->writeOnDisk($hostDirectory . DIRECTORY_SEPARATOR . $testSuitePath);
                 $generatedFile = $generatedFile + 1;
-                $progressBar->setMessage('[INFO] Generating Php File: ' . $testSuitePath . '/' . $className  . '.php');
+                $progressBar->setMessage('[INFO] Generating Php File: ' . $testSuitePath . DIRECTORY_SEPARATOR . $className  . '.php');
                 $generatedFile++;
                 $this->nextTestSuite($currentPath, $hostDirectory);
             }
@@ -238,6 +244,18 @@ class TestGenerator implements TestGeneratorInterface
         return $generatedFile;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function saveTestConfiguration()
+    {
+        $configParser = $this->getConfigParser();
+        $newBeginLine = $this->getBeginLine() + $this->getNumberOfLine();
+        $configParser->updateConfigurationValue(Constants::BEGIN_LINE, $newBeginLine);
+        $this->setBeginLine($newBeginLine);
+        $this->setEndLine($this->getNumberOfLine() + $newBeginLine);
+        $this->setTestConfiguration([]);
+    }
 
     /**
      * @param string $currentPath
@@ -266,7 +284,7 @@ class TestGenerator implements TestGeneratorInterface
         foreach ($this->getTestConfiguration() as $key => $hostConfig) {
             $host = $hostConfig['dest'];
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/';
+            $hostDirectory = $currentPath . Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR;
             Utils::createDir($hostDirectory);
             $builder = new MainHostBuilder();
             $className = $hostCleaned . 'MainHost';
@@ -303,7 +321,7 @@ class TestGenerator implements TestGeneratorInterface
         foreach ($hosts as $hostConfig) {
             $host = $hostConfig[Constants::HOST_DEST];
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned . '/';
+            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned . DIRECTORY_SEPARATOR;
             $generator = new Generator();
             $generator->setTemplateDirs(array(
                 $currentPath . 'templates/' . $this->getTestStack(),
@@ -313,33 +331,41 @@ class TestGenerator implements TestGeneratorInterface
             $phpunitLauncherBuilder->setOutputName(Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
             $generator->setVariables(array(
                 'numberOfTestSuite' => $this->getTestSuiteId(),
-                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned,
+                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned,
                 'testResultFormat'  => $this->getTestResultFormat(),
             ));
             $generator->addBuilder($phpunitLauncherBuilder);
             $generator->writeOnDisk($currentPath . $hostTestPath);
+            chmod($currentPath . $hostTestPath . Constants::PHPUNIT_LAUNCHER_SHELL_FILE, 0755);
         }
     }
 
-    public function execute()
+    /**
+     * @param ConsoleOutput $output
+     * @param bool $printInfo
+     */
+    public function execute(ConsoleOutput $output, $printInfo = false)
     {
+        $io = new SymfonyStyle(new ArrayInput([]), $output);
+        $io->title('Log2test: Running tests...');
+        $io->comment('Now running all generated tests for this stack: ' . $this->getTestStack());
         $hosts = $this->getHosts();
-
         foreach ($hosts as $hostConfig) {
             $host = $hostConfig[Constants::HOST_DEST];
             $hostCleaned = ucfirst(Utils::urlToString($host));
-            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . $this->getTestStack() . '/' . $hostCleaned . '/';
-
+            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR . $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned . DIRECTORY_SEPARATOR;
             $process = new Process($hostTestPath . Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
-            $process->run(function ($type, $buffer) {
+            $process->run(function ($type, $buffer) use($printInfo, $io) {
                 if (Process::ERR === $type) {
-                    echo 'ERR > ' . $buffer;
+                    $io->error($buffer);
                 } else {
-                    echo $buffer;
+                    if (true === $printInfo) {
+                        echo $buffer;
+                    }
                 }
             });
         }
-
+        $io->success('Finished running all phpunit Test Suites -> Publishing "' . $this->getTestResultFormat() . '" results on each phpunit test Suite directory');
     }
 
 

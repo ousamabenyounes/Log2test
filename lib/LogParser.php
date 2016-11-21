@@ -3,9 +3,6 @@
 namespace Log2Test;
 
 
-use Symfony\Component\Console\Helper\ProgressBar;
-use TwigGenerator\Builder\Generator;
-use Symfony\Component\Process\Process;
 
 abstract class LogParser implements LogParserInterface
 {
@@ -187,6 +184,7 @@ abstract class LogParser implements LogParserInterface
             }
         }
 
+
         return true;
     }
 
@@ -211,21 +209,7 @@ abstract class LogParser implements LogParserInterface
         }
         $this->setTestConfiguration($testConfiguration);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function saveTestConfiguration()
-    {
-        $configParser = $this->getConfigParser();
-        $newBeginLine = $this->getBeginLine() + $this->getNumberOfLine();
-        $configParser->updateConfigurationValue(Constants::BEGIN_LINE, $newBeginLine);
-        $this->setBeginLine($newBeginLine);
-        $this->setEndLine($this->getNumberOfLine() + $newBeginLine);
-        $this->setTestConfiguration([]);
-    }
-
-
+    
     /**
      * @param $needle
      * @param $haystack

@@ -33,9 +33,5 @@ interface LogParserInterface
      */
     public function addTestToConfiguration($host, $completePath);
 
-    /**
-     * At the end of the process we save all our configuration on a Yaml File
-     *
-     */
-    public function saveTestConfiguration();
+
 }
