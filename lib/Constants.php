@@ -72,7 +72,7 @@ final class Constants
     const PARAMETER_FILE_FROM_VENDOR = 'vendor/ousamabenyounes/log2test/config/parameters-log2test.yml.dist';
     const PARAMETER_FILE_TO = 'config/parameters-log2test.yml.dist';
     const CONFIG_PATH = 'config/';
-    const TESTS_GLOBAL_PATH = 'generated/';
+    const TESTS_GLOBAL_PATH = 'generated';
     const TESTS_CURL_PATH = 'generated/curl/';
     const TESTS_PHPUNIT_SELENIUM_PATH = 'generated/phpunit_selenium/';
     const TESTS_SCREENSHOT_PATH = 'generated/screenshots/';

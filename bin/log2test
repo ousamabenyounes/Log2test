@@ -12,22 +12,28 @@ namespace Log2Test;
 require_once('vendor/autoload.php');
 
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 
 $output = new ConsoleOutput();
 $output->setFormatter(new OutputFormatter(true));
+$io = new SymfonyStyle(new ArrayInput([]), $output);
 
 // Parsing parameters
 $options = getopt("m:");
-$mode = $options['m'];
+$mode = (isset($options['m']) ? $options['m'] : '');
 
-$configParser = new ConfigParser();
 $logParser = LogParserFactory::create();
+$configParser = new ConfigParser();
+$logFile = $configParser->getValueFromKey('logFile');
+$testGenerator = new TestGenerator($configParser, $logFile);
 
-if ('generate' === $mode || 'all' === $mode) {
-    $logFile = $configParser->getValueFromKey('logFile');
+if ('generate' === $mode || '' === $mode) {
+    $io->title('Log2Test: Generating all tests');
+
     $splFile = new \SplFileObject($logFile, 'r');
     $splFile->seek(PHP_INT_MAX);
     $nbLine = $splFile->key() + 1;
@@ -43,17 +49,22 @@ if ('generate' === $mode || 'all' === $mode) {
 
     while (1) {
         $parseNextLine = $logParser->parse();
-        $nbFileGenerated += $logParser->generateAllTests($progress);
-        $logParser->saveTestConfiguration();
-        $progress->advance($logParser->getNumberOfLine());
+        $testGenerator->setTestConfiguration($logParser->getTestConfiguration());
+        $nbFileGenerated += $testGenerator->generateAllTests($progress);
+        $testGenerator->saveTestConfiguration();
+        $progress->advance($testGenerator->getNumberOfLine());
         if (false === $parseNextLine)
         {
             break;
         }
     }
     $progress->finish();
+    $io->writeln('');
+    $io->writeln('');
+    $io->success('All ' . $logParser->getTestStack() . ' tests were generated. ' . $nbFileGenerated . ' files created.');
 }
 
-if ('execute' === $mode || 'all' === $mode) {
-    $logParser->generatePhpunitTestSuiteLauncher();
+if ('execute' === $mode || '' === $mode) {
+    $testGenerator->generatePhpunitTestSuiteLauncher();
+    $testGenerator->execute($output);
 }
