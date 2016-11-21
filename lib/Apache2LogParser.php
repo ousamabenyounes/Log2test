@@ -3,7 +3,6 @@
 namespace Log2Test;
 
 use Kassner\LogParser as KassnerLogParser;
-use Log2Test\LogParser;
 
 
 class Apache2LogParser extends LogParser
