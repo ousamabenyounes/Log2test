@@ -2,7 +2,6 @@
 
 namespace Log2Test;
 
-use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Interface implemented by parser classes.

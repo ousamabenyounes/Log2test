@@ -9,13 +9,6 @@ abstract class LogParser implements LogParserInterface
 
 
     /**
-     * testStack => can be Selenium or Curl
-     *
-     * @var string
-     */
-    protected $testStack;
-
-    /**
      * list of host to keep from log file
      *
      * @var array
@@ -126,7 +119,6 @@ abstract class LogParser implements LogParserInterface
     {
         $this->setConfigParser($configParser);
         $this->setSplFileObject($splFile);
-        $this->setTestStack($configParser->getValueFromKey('testStack'));
         $this->setHosts($configParser->getValueFromKey('hosts'));
         $this->setNumberOfLine($configParser->getValueFromKey('numberOfLine'));
         $this->setBeginLine($configParser->getValueFromKey(Constants::BEGIN_LINE));
@@ -220,22 +212,6 @@ abstract class LogParser implements LogParserInterface
     }
 
     /********** GETTER AND SETTERS ************/
-
-    /**
-     * @return string
-     */
-    public function getTestStack()
-    {
-        return $this->testStack;
-    }
-
-    /**
-     * @param string $testStack
-     */
-    public function setTestStack($testStack)
-    {
-        $this->testStack = $testStack;
-    }
 
 
     /**
