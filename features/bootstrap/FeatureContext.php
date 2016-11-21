@@ -42,7 +42,6 @@ class FeatureContext implements Context
     public function iGenerateTest($testStack)
     {
         $apache2LogParser = $this->getApach2LogParser();
-        $apache2LogParser->setTestStack($testStack);
         $apache2LogParser->parse();
         $progress = new ProgressBar(new ConsoleOutput(), 20);
 
