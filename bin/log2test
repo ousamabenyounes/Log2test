@@ -26,8 +26,8 @@ $io = new SymfonyStyle(new ArrayInput([]), $output);
 $options = getopt("m:");
 $mode = (isset($options['m']) ? $options['m'] : '');
 
-$configParser = new ConfigParser();
 $logParser = LogParserFactory::create();
+$configParser = new ConfigParser();
 $logFile = $configParser->getValueFromKey('logFile');
 $testGenerator = new TestGenerator($configParser, $logFile);
 
