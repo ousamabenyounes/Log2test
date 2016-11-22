@@ -346,11 +346,10 @@ class TestGenerator implements TestGeneratorInterface
      * @param ConsoleOutput $output
      * @param bool $printInfo
      */
-    public function execute(ConsoleOutput $output, $printInfo = true)
+    public function execute(ConsoleOutput $output, $printInfo = false)
     {
         $io = new SymfonyStyle(new ArrayInput([]), $output);
-        $io->title('Log2test: Running tests...');
-        $io->comment('Now running all generated tests for this stack: ' . $this->getTestStack());
+        $io->title('Log2test: Running ' . $this->getTestStack() . ' tests...');
         $hosts = $this->getHosts();
         foreach ($hosts as $hostConfig) {
             $host = $hostConfig[Constants::HOST_DEST];

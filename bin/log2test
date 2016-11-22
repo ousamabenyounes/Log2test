@@ -32,7 +32,7 @@ $logFile = $configParser->getValueFromKey('logFile');
 $testGenerator = new TestGenerator($configParser, $logFile);
 
 if ('generate' === $mode || '' === $mode) {
-    $io->title('Log2Test: Generating all tests');
+    $io->title('Log2Test: Generating all ' . $testGenerator->getTestStack() .' tests');
 
     $splFile = new \SplFileObject($logFile, 'r');
     $splFile->seek(PHP_INT_MAX);
@@ -61,7 +61,7 @@ if ('generate' === $mode || '' === $mode) {
     $progress->finish();
     $io->writeln('');
     $io->writeln('');
-    $io->success('All ' . $logParser->getTestStack() . ' tests were generated. ' . $nbFileGenerated . ' files created.');
+    $io->success('All ' . $testGenerator->getTestStack() . ' tests were generated. ' . $nbFileGenerated . ' files created.');
 }
 
 if ('execute' === $mode || '' === $mode) {
