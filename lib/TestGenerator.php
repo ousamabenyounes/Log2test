@@ -332,9 +332,9 @@ class TestGenerator implements TestGeneratorInterface
             $phpunitLauncherBuilder->setOutputName(Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
             $generator->setVariables(array(
                 'numberOfTestSuite' => $this->getTestSuiteId(),
-                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR .
-                    $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned,
-                'testResultFormat'  => $this->getTestResultFormat(),
+                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . '/' .
+                    $this->getTestStack() . '/' . $hostCleaned,
+                'testResultFormat'  => $this->getTestResultFormat()
             ));
             $generator->addBuilder($phpunitLauncherBuilder);
             $generator->writeOnDisk($currentPath . $hostTestPath);
@@ -370,7 +370,7 @@ class TestGenerator implements TestGeneratorInterface
             });
         }
         $io->success('Finished running all phpunit Test Suites -> Publishing "' .
-            $this->getTestResultFormat() . '" results on each phpunit test Suite directory');
+            $this->getTestResultFormat() . '" results on ' . $hostTestPath . 'testSuite1 to  testSuite' . $this->getTestSuiteId() . ' paths');
     }
 
 
