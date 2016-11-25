@@ -12,7 +12,7 @@ parameters:
     pauseBetweenTests: 0
     encodedUrls: false
     enabledScreenshot: true
-    log2testVersion: V1.2
+    log2testVersion: V1.3
     currentTestSuiteId: 1
     numberOfFileByTestSuite: 30
     testResultFormat: xml
