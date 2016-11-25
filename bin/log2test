@@ -66,5 +66,5 @@ if ('generate' === $mode || '' === $mode) {
 
 if ('execute' === $mode || '' === $mode) {
     $testGenerator->generatePhpunitTestSuiteLauncher();
-    $testGenerator->execute($output);
+    $testGenerator->execute($output, true);
 }

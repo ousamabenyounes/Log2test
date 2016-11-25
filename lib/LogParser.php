@@ -151,8 +151,8 @@ abstract class LogParser implements LogParserInterface
             $host = $hostConfig[Constants::HOST_SOURCE];
             $testConfiguration = $this->getTestConfiguration();
             $testConfiguration[$host] = (!isset($testConfiguration[$host]) ? [] : $testConfiguration[$host]);
-            $testConfiguration[$host]['paths'] = (!isset($testConfiguration[$host]['paths'])
-                ? [] : $testConfiguration[$host]['paths']);
+            $testConfiguration[$host]['paths'] =
+                (!isset($testConfiguration[$host]['paths']) ? [] : $testConfiguration[$host]['paths']);
             $testConfiguration[$host]['dest'] = $dest;
             $this->setTestConfiguration($testConfiguration);
             for ($i = 0; $i < $numberOfLine; $i++) {
@@ -167,7 +167,6 @@ abstract class LogParser implements LogParserInterface
                 }
             }
         }
-
 
         return true;
     }
@@ -185,6 +184,7 @@ abstract class LogParser implements LogParserInterface
     public function addTestToConfiguration($host, $completePath)
     {
         $testConfiguration = $this->getTestConfiguration();
+        $completePath = addslashes($completePath);
         $completePathEncoded = (true === $this->isEncodedUrls() ?  urlencode($completePath) : $completePath);
         if (false === $this->isRemoveDuplicateUrl() ||
            (true === $this->isEnabledScreenshot() && !in_array($completePathEncoded, $testConfiguration[$host]['paths'])) )
