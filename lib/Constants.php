@@ -79,4 +79,9 @@ final class Constants
     const BIN_DIR = 'bin/';
     const LOG2TEST_BIN = 'log2test';
 
+    /*
+     * List Of Php known errors / Warning to check
+     */
+    const KNOWN_PHP_ERRORS = ["Fatal error", "PHP Warning", "PHP parse error"];
+
 }
