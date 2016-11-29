@@ -2,6 +2,8 @@
 
 namespace Log2Test;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 class CurlTest extends \PHPUnit_Framework_TestCase
 {
     use ClassInfo;
@@ -28,7 +30,12 @@ class CurlTest extends \PHPUnit_Framework_TestCase
             $this->fail('[Error] url => "' . $url . '"' . ' Empty Content ');
         }
         curl_close($ch);
-        $this->assertContains($httpCode, [200], '[Error] url => "' . $url . '"'  . ' HttpStatusCode => "' . $httpCode . '"');
+        $errorUrl = '[Error] url => "' . $url . '"';
+        $this->assertContains($httpCode, [200], $errorUrl . ' HttpStatusCode => "' . $httpCode . '"');
+        foreach (Constants::KNOWN_PHP_ERRORS as $error)
+        {
+            $this->assertNotContains($error, $data, $errorUrl . ' contains a defined PHP Error => ' . $error);
+        }
         unset($data);
     }
 
