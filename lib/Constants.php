@@ -82,6 +82,10 @@ final class Constants
     /*
      * List Of Php known errors / Warning to check
      */
-    const KNOWN_PHP_ERRORS = ["Fatal error", "PHP Warning", "PHP parse error"];
+    private static $knownPhpErrors = ["Fatal error", "PHP Warning", "PHP parse error"];
+
+    public static function getKnownPhpErrors() {
+        return self::$knownPhpErrors;
+    }
 
 }
