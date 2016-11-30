@@ -32,7 +32,8 @@ class CurlTest extends \PHPUnit_Framework_TestCase
         curl_close($ch);
         $errorUrl = '[Error] url => "' . $url . '"';
         $this->assertContains($httpCode, [200], $errorUrl . ' HttpStatusCode => "' . $httpCode . '"');
-        foreach (Constants::KNOWN_PHP_ERRORS as $error)
+        $errors = Constants::getKnownPhpErrors();
+        foreach ($errors as $error)
         {
             $this->assertNotContains($error, $data, $errorUrl . ' contains a defined PHP Error => ' . $error);
         }
