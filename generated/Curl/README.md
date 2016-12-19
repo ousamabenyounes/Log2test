@@ -1,1 +1,1 @@
-## This directory is used to store phpunit_curl generated tests
+## This directory is used to store curl multi generated tests
