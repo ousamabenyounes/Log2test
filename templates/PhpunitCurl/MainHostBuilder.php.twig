@@ -1,13 +1,13 @@
 <?php
 
-namespace Log2Test\Generated\Curl;
+namespace Log2Test\Generated\PhpunitCurl;
 
 require_once('vendor/autoload.php');
 
-use \Log2Test\CurlTest;
+use \Log2Test\CurlPhpunitTest;
 
 {% include 'global_comment.php.twig' %}
-class {{ className }} extends CurlTest
+class {{ className }} extends CurlPhpunitTest
 {
     /**
     * @var string
@@ -48,4 +48,14 @@ class {{ className }} extends CurlTest
     }
 {% endif %}
 
+    protected function tearDown()
+    {
+        $refl = new \ReflectionObject($this);
+        foreach ($refl->getProperties() as $prop) {
+            if (!$prop->isStatic() && 0 !== strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_')) {
+                $prop->setAccessible(true);
+                $prop->setValue($this, null);
+            }
+        }
+    }
 }

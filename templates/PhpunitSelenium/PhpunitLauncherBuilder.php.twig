@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+{% for testId in 1..numberOfTestSuite %}./bin/phpunit  {{ testSuitePath }}/testSuite{{ testId }}{% if  testResultFormat == 'xml' %} --log-junit {% elseif testResultFormat == 'json' %} --log-json {% endif %} {{ testSuitePath }}/testSuite{{ testId }}/result{{ testId }}.{{ testResultFormat }}
+{% endfor %}

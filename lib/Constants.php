@@ -15,6 +15,7 @@ final class Constants
 
     const PHPUNIT_TEST_SUITE_XML_FILE = 'phpunit_test_suite_global.xml';
     const PHPUNIT_LAUNCHER_SHELL_FILE = 'phpunitLauncher.sh';
+    const LAUNCHER_FILE = 'runAll.php';
 
     /*
      * Parameter Begin file key
@@ -66,6 +67,14 @@ final class Constants
      */
     const HOST_DEST = 1;
 
+    /**
+     * All Log2Test Test stack type
+     */
+    const CURL_TEST = 'Curl';
+    const PHPUNIT_CURL_TEST = 'PhpunitCurl';
+    const PHPUNIT_SELENIUM_TEST = 'PhpunitSelenium';
+
+
     /*
      * List of all Log2Test path & ressources
      */
@@ -73,12 +82,19 @@ final class Constants
     const PARAMETER_FILE_TO = 'config/parameters-log2test.yml.dist';
     const CONFIG_PATH = 'config/';
     const TESTS_GLOBAL_PATH = 'generated';
-    const TESTS_CURL_PATH = 'generated/curl/';
-    const TESTS_PHPUNIT_SELENIUM_PATH = 'generated/phpunit_selenium/';
+    const TESTS_CURL_PATH = 'generated/Curl/';
+    const TESTS_PHPUNIT_CURL_PATH = 'generated/PhpunitCurl/';
+    const TESTS_PHPUNIT_SELENIUM_PATH = 'generated/PhpunitSelenium/';
     const TESTS_SCREENSHOT_PATH = 'generated/screenshots/';
+
     const BIN_DIR = 'bin/';
     const LOG2TEST_BIN = 'log2test';
 
+    const ERROR = 'error';
+    const SUCCESS = 'success';
+
+    const MULTI_CURL_URL = 0;
+    const MULTI_CURL_HANDLE = 1;
     /*
      * List Of Php known errors / Warning to check
      */

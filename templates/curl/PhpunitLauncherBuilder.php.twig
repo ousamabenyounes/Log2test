@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-{% for testId in 1..numberOfTestSuite %}./bin/phpunit  {{ phpunitSuitePath }}/testSuite{{ testId }}{% if  testResultFormat == 'xml' %} --log-junit {% elseif testResultFormat == 'json' %} --log-json {% endif %} {{ phpunitSuitePath }}/testSuite{{ testId }}/result{{ testId }}.{{ testResultFormat }}
-{% endfor %}

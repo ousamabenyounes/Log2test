@@ -4,13 +4,14 @@
 
 Log2Test is a PHP application that allows you to **transform your Production Log into test**.  
 You can export your log to the following stack:  
-- **PhpCurl**: A good solution when you only log API calls or if you don't Need to run Javascript or Ajax calls  
-- **PhpunitSelenium**: You can define browsers you want to test  
+- **Curl**: Php Multi Curl Test => A good solution if you have huge apache2 log file or if you don't Need to run Javascript or Ajax calls  
+- **PhpunitCurl**:  Phpunit Curl test   
+- **PhpunitSelenium**: Allows you to open all your log file url's on defined browsers you need to test  
 
 Why exporting your log production's files to tests?
 
 - Be able to **find broken links**  
-- Detect Blank/Empty web pages (When a 500 error occurs and no error redirection page is enabled)
+- Detect Blan   k/Empty web pages (When a 500 error occurs and no error redirection page is enabled)
 - Before sending new features in production, you can **easily launch real tests for your pre-production**  
 - Launching all your access log on different browsers with Selenium allows you to **validate Cross Browser Compatibility**  
 
@@ -24,12 +25,11 @@ composer install
 # How to use
 
 **Let's now see how Log2Test works step by step as seen on screencast gif file bellow**
-- At the beginning, **no existing tests** on "generated/curl" directory
+- At the beginning, **no existing tests** on "generated/Curl" directory
 - Given this context:  
   - A configuration file (Yaml File) -> config/parameters-log2test.yml   
   - An Apache2 Access Log file -> log/test.log   
-- Running **./bin/log2test** command will **generate all your curl tests**  
-- Now you can Launch all your curl tests -> run ./bin/phpunit -c phpunit-curl.xml  
+- Running **./bin/log2test** command will **generate and run all your tests**  
 
 <img src="web/img/log2testCurl.gif"></img>
 
@@ -48,7 +48,7 @@ Here are all configuration's file properties:
 |:----------:|:-------------:|:-------------:|---------------|
 | host | Array | List of host to parse [see samples here](#host-sample) | |
 | logFile | String | Path to your acces log File | log/test.log |
-| testStack | String | Available test stack: "phpunit_selenium" or "curl" | curl |
+| testStack | String | Available test stack: "PhpunitSelenium" or "Curl" or "PhpunitCurl | Curl |
 | beginLine | Int | Begin parsing at line X | 0 |
 | numberOfLine | Int | Number of line to parse | 300 |
 | logParserClass | String | Your log parsing class | \Log2Test\Apache2LogParser |

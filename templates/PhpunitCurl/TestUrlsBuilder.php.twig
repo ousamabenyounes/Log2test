@@ -1,0 +1,30 @@
+<?php
+
+namespace Log2Test;
+
+require_once('vendor/autoload.php');
+
+use Log2Test\Generated\PhpunitCurl\{{ mainHostClassName }};
+
+{% include 'global_comment.php.twig' %}
+class {{ className }} extends {{ mainHostClassName }}
+{
+
+{% for path in paths %}{% set pathHashed = pathsHashed[loop.index0] %}
+    public function test{{ className | ucfirst }}Url{{ loop.index }}()
+    {
+            $this->curlCall($this->getHost() . '{{ path }}');{% if  pauseBetweenTests > 0 %}
+
+            sleep({{ pauseBetweenTests }});
+{% endif %}
+{% if true == enabledScreenshot %}
+            // Here take screenshot with pageres?
+{% endif %}
+    }
+{% endfor %}
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+    }
+}
