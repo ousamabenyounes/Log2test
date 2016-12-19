@@ -32,6 +32,7 @@
         "cedriclombardot/twig-generator": "^1.1",
         "jasny/twig-extensions": "^1.0",
         "phpunit/phpunit": "5.5.*",
+        "phpunit/phpunit-selenium": ">=1.2",
         "symfony/filesystem": "^3.1",
         "symfony/console": "^3.1",
         "symfony/process": "^3.1"
@@ -60,8 +61,9 @@
     "autoload": {
         "psr-4" : {
             "Log2Test\\" : "lib/",
-            "Log2Test\\Generated\\Curl\\" : "generated/curl/",
-            "Log2Test\\Generated\\Selenium\\" : "generated/phpunit_selenium/"
+            "Log2Test\\Generated\\Curl\\" : "generated/Curl/",
+            "Log2Test\\Generated\\PhpunitCurl\\" : "generated/PhpunitCurl/",
+            "Log2Test\\Generated\\Selenium\\" : "generated/PhpunitSelenium/"
         }
     },
     "config":  {
