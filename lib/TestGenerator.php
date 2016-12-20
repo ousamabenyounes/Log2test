@@ -9,8 +9,6 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use TwigGenerator\Builder\Generator;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Log2Test\PhpLauncherBuilder as PhpLauncherBuilder;
-use Log2Test\PhpunitLauncherBuilder as PhpunitLauncherBuilder;
 
 class TestGenerator implements TestGeneratorInterface
 {
