@@ -4,17 +4,17 @@ Feature: Generate log2test Test in different stack
         Given apache2 Log File log/test.log
         When I generate "Curl" test
         Then "generated/Curl/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" was generated
-        And "generated/Curl/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" file_sha1 is equal to "b7f85bdbe30585dcf13c9049608a3fac7b77cd61"
+        And "generated/Curl/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" file_sha1 is equal to "0327f774ea6b028e45c4f4874c86005527a2dc1f"
 
     Scenario: Log2Test generates PhpunitCurl test from logFile
         Given apache2 Log File log/test.log
         When I generate "PhpunitCurl" test
         Then "generated/PhpunitCurl/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" was generated
-        And "generated/PhpunitCurl/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" file_sha1 is equal to "7b770b603ba25ce1024e175694225f45677bf202"
+        And "generated/PhpunitCurl/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" file_sha1 is equal to "26bf5d0cba712510a9ceeb88b1bf0f997202b895"
 
     Scenario: Log2Test generates PhpunitSelenium test from logFile
         Given apache2 Log File log/test.log
         When I generate "PhpunitSelenium" test
         Then "generated/PhpunitSelenium/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" was generated
-        And "generated/PhpunitSelenium/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" file_sha1 is equal to "bad0110b773b8705a2fdbb3ec9e9a3da7fe5a6d8"
+        And "generated/PhpunitSelenium/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" file_sha1 is equal to "f4c1533d16154af4f120a2be94ef5e6e6dd6758e"
 
