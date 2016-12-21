@@ -1,0 +1,61 @@
+<?php
+
+namespace Log2Test\Generated\PhpunitCurl;
+
+require_once('vendor/autoload.php');
+
+use \Log2Test\CurlPhpunitTest;
+
+{% include 'global_comment.php.twig' %}
+class {{ className }} extends CurlPhpunitTest
+{
+    /**
+    * @var string
+    */
+    protected $host;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setHost('{{ host }}');
+    }
+
+    /**
+    * @return string
+    */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+    * @param string $host
+    */
+    public function setHost($host)
+    {
+        $this->host = $host;
+    }
+
+
+
+{% if true == enabledScreenshot %}
+    /**
+    * Take a screenshot
+    * @param string $filename
+    */
+    public function screenshot($filename) {
+        // implements
+    }
+{% endif %}
+
+    protected function tearDown()
+    {
+        $refl = new \ReflectionObject($this);
+        foreach ($refl->getProperties() as $prop) {
+            if (!$prop->isStatic() && 0 !== strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_')) {
+                $prop->setAccessible(true);
+                $prop->setValue($this, null);
+            }
+        }
+    }
+}

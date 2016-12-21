@@ -1,0 +1,41 @@
+<?php
+
+namespace Log2Test;
+
+require_once('vendor/autoload.php');
+
+use Log2Test\Generated\Curl\{{ mainHostClassName }};
+
+{% include 'global_comment.php.twig' %}
+class {{ className }} extends {{ mainHostClassName }}
+{
+
+{% for path in paths %}
+    public function test{{ className | ucfirst }}Url{{ loop.index }}()
+    {
+            $this->curlCall($this->getHost() . '{{ path }}', {{ loop.index }});{% if  pauseBetweenTests > 0 %}
+
+            sleep({{ pauseBetweenTests }});
+{% endif %}
+{% if true == enabledScreenshot %}
+            // Here take screenshot with pageres?
+{% endif %}
+    }
+{% endfor %}
+
+
+    public function runAll()
+    {
+{% for path in paths %}
+        $this->test{{ className | ucfirst }}Url{{ loop.index }}();
+{% endfor %}
+        $this->runRequest();
+        $this->analyzeRequest();
+
+        return json_encode($this->getReporting(), JSON_PRETTY_PRINT);
+    }
+}
+
+$launcher = new {{ className }}();
+echo $launcher->runAll();
+
