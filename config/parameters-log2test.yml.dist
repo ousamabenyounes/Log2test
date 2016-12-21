@@ -1,7 +1,7 @@
 parameters:
     hosts: [[www.shop2tout.com, www.shop2tout.local]]
     logFile: log/test.log
-    testStack: curl
+    testStack: Curl
     beginLine: 0
     numberOfLine: 30
     logParserClass: \Log2Test\Apache2LogParser

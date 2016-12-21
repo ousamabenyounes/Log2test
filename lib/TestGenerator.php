@@ -155,6 +155,8 @@ class TestGenerator implements TestGeneratorInterface
     protected $testResultFormat;
 
 
+
+
     /**
      * LogParser constructor.
      * @param ConfigParser  $configParser
@@ -236,7 +238,7 @@ class TestGenerator implements TestGeneratorInterface
                 $progressBar->setMessage('[INFO] Generating Php File: ' . $testSuitePath .
                     DIRECTORY_SEPARATOR . $className  . '.php');
                 $generatedFile++;
-                $this->nextTestSuite($currentPath, $hostDirectory);
+                $this->nextTestSuite();
             }
         }
 
@@ -257,12 +259,9 @@ class TestGenerator implements TestGeneratorInterface
     }
 
     /**
-     * @param string $currentPath
-     * @param string $hostDirectory
-     *
      * Check if we need to go to next phpunit test suite
      */
-    public function nextTestSuite($currentPath, $hostDirectory)
+    public function nextTestSuite()
     {
         if ($this->getCurrentNumberOfFileByTestSuite() >= $this->getNumberOfFileByTestSuite()) {
             $configParser = $this->getConfigParser();
@@ -313,7 +312,7 @@ class TestGenerator implements TestGeneratorInterface
     /**
      * @param ProgressBar $progress
      */
-    public function generatePhpunitTestSuiteLauncher()
+    public function generateTestSuiteLauncher()
     {
         $currentPath = __DIR__ . '/../';
         $hosts = $this->getHosts();
@@ -328,25 +327,60 @@ class TestGenerator implements TestGeneratorInterface
                 $currentPath . 'templates/' . $this->getTestStack(),
             ));
             $generator->setMustOverwriteIfExists(true);
-            $phpunitLauncherBuilder = new PhpunitLauncherBuilder();
-            $phpunitLauncherBuilder->setOutputName(Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
+            
+            $launcherClass = (Constants::CURL_TEST === $this->getTestStack() ? 'Log2Test\PhpLauncherBuilder' :
+                'Log2Test\PhpunitLauncherBuilder');
+            $launcherBuilder = new $launcherClass();
+            $launcherFile = ('Curl' === $this->getTestStack() ? Constants::LAUNCHER_FILE : Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
+            $launcherBuilder->setOutputName($launcherFile);
+
+            $testPath = Constants::TESTS_GLOBAL_PATH . '/' . $this->getTestStack() . '/' . $hostCleaned;
             $generator->setVariables(array(
                 'numberOfTestSuite' => $this->getTestSuiteId(),
-                'phpunitSuitePath'  => Constants::TESTS_GLOBAL_PATH . '/' .
-                    $this->getTestStack() . '/' . $hostCleaned,
-                'testResultFormat'  => $this->getTestResultFormat()
+                'testSuitePath'  => $testPath,
+                'testResultFormat'  => $this->getTestResultFormat(),
             ));
-            $generator->addBuilder($phpunitLauncherBuilder);
+            $generator->addBuilder($launcherBuilder);
             $generator->writeOnDisk($currentPath . $hostTestPath);
-            chmod($currentPath . $hostTestPath . Constants::PHPUNIT_LAUNCHER_SHELL_FILE, 0755);
+            chmod($currentPath . $hostTestPath . $launcherFile, 0755);
         }
     }
+
 
     /**
      * @param ConsoleOutput $output
      * @param bool $printInfo
      */
-    public function execute(ConsoleOutput $output, $printInfo = false)
+    public function executeCurl(ConsoleOutput $output, $printInfo = false)
+    {
+        $io = new SymfonyStyle(new ArrayInput([]), $output);
+        $hosts = $this->getHosts();
+        foreach ($hosts as $hostConfig) {
+            $host = $hostConfig[Constants::HOST_DEST];
+            $hostCleaned = ucfirst(Utils::urlToString($host));
+            $hostTestPath =  Constants::TESTS_GLOBAL_PATH . DIRECTORY_SEPARATOR .
+                $this->getTestStack() . DIRECTORY_SEPARATOR . $hostCleaned . DIRECTORY_SEPARATOR;
+            $process = new Process('php ' . $hostTestPath . Constants::LAUNCHER_FILE);
+            $process->setTimeout(null);
+            $process->setIdleTimeout(null);
+            $process->run(function ($type, $buffer) use($printInfo, $io) {
+                if (Process::ERR === $type) {
+                    $io->error($buffer);
+                } else {
+                    if (true === $printInfo) {
+                        echo $buffer;
+                    }
+                }
+            });
+        }
+    }
+
+
+    /**
+     * @param ConsoleOutput $output
+     * @param bool $printInfo
+     */
+    public function executePhpunit(ConsoleOutput $output, $printInfo = false)
     {
         $io = new SymfonyStyle(new ArrayInput([]), $output);
         $io->title('Log2test: Running ' . $this->getTestStack() . ' tests...');
