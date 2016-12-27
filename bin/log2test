@@ -29,12 +29,12 @@ $io = new SymfonyStyle(new ArrayInput([]), $output);
 $options = getopt("m:");
 $mode = (isset($options['m']) ? $options['m'] : '');
 
-$logParser = LogParserFactory::create();
 $configParser = new ConfigParser();
 $logFile = $configParser->getValueFromKey('logFile');
 $testGenerator = new TestGenerator($configParser, $logFile);
 
 if ('generate' === $mode || '' === $mode) {
+    $logParser = LogParserFactory::create();
     $time_start = microtime(true);
     $io->title('Log2Test: Generating all ' . $testGenerator->getTestStack() .' tests');
     $splFile = new \SplFileObject($logFile, 'r');
@@ -56,11 +56,11 @@ if ('generate' === $mode || '' === $mode) {
         $nbFileGenerated += $testGenerator->generateAllTests($progress);
         $testGenerator->saveTestConfiguration();
         $progress->advance($testGenerator->getNumberOfLine());
+        $logParser->setTestConfiguration([]);
         if (false === $parseNextLine)
         {
             break;
         }
-        sleep(2);
     }
     $progress->finish();
     $io->newLine();
