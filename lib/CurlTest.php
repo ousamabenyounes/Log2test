@@ -36,6 +36,7 @@ class CurlTest
         $this->setReporting([
             'className' => get_called_class(),
             Constants::ERROR => [],
+            Constants::REDIRECTED => [],
             Constants::SUCCESS => []
         ]);
         $mutliCurlHandle = curl_multi_init();
@@ -92,7 +93,7 @@ class CurlTest
         if (true === $keepData) {
             $info[] = $this->getData();
         }
-        $reporting[$type]['Url' . $testId] = $info;
+        $reporting[$type][] = ['Url' . $testId => $info];
         $this->setReporting($reporting);
 
     }
@@ -138,7 +139,9 @@ class CurlTest
             if (curl_errno($curlHandle))
             {
                 $this->addReporting(Constants::ERROR, ' Curl error => "' . curl_error($curlHandle) . '"');
-            } elseif(!in_array($httpCode, [200, 201])) {
+            } elseif (in_array($httpCode, [Constants::HTTP_MOVED_PERMANENTLY, Constants::HTTP_MOVED_TEMPORARLY])) {
+                $this->addReporting(Constants::REDIRECTED);
+            } elseif (!in_array($httpCode, [Constants::HTTP_SUCCESS_OK, Constants::HTTP_SUCCESS_CREATED])) {
                 $this->addReporting(Constants::ERROR, 'Unauthorized Http Status Code');
             } elseif (empty($data)) {
                 $this->addReporting(Constants::ERROR, ' Empty Content ');
