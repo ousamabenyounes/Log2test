@@ -18,14 +18,19 @@ final class Constants
     const LAUNCHER_FILE = 'runAll.php';
 
     /*
-     * Parameter Begin file key
+     * Config Parameter Begin file key
      */
     const BEGIN_LINE = 'beginLine';
 
     /*
-     * Parameter Current Test SuiteId key
+     * Config Parameter  Test SuiteId key
      */
-    const CURRENT_TEST_SUITE_ID = 'currentTestSuiteId';
+    const TEST_SUITE_ID = 'testSuiteId';
+
+    /*
+     * Config Parameter lastResultId
+     */
+    const LAST_RESULT_ID = 'lastResultId';
 
     /*
      * Get Method
