@@ -92,6 +92,7 @@ final class Constants
 
     const ERROR = 'error';
     const SUCCESS = 'success';
+    const REDIRECTED = 'redirected';
 
     const MULTI_CURL_URL = 0;
     const MULTI_CURL_HANDLE = 1;
@@ -103,5 +104,12 @@ final class Constants
     public static function getKnownPhpErrors() {
         return self::$knownPhpErrors;
     }
+
+    const HTTP_SUCCESS_OK = 200;
+    const HTTP_SUCCESS_CREATED = 201;
+
+    const HTTP_MOVED_PERMANENTLY = 300;
+    const HTTP_MOVED_TEMPORARLY = 301;
+
 
 }
