@@ -50,3 +50,45 @@ if ('execute' === $mode || '' === $mode) {
         }
     }
 }
+
+if ('compileResult' === $mode || '' === $mode) {
+    $totalError = 0;
+    $totalSuccess = 0;
+    $totalRedirect = 0;
+    $storedResult = [];
+    $io->title('Log2Test: Compiling all TestsSuite results');
+
+    for ($testId = 1; $testId <= {{ numberOfTestSuite }}; $testId++) {
+        $jsonResultFile = '{{ testSuitePath }}/testSuite' . $testId . DIRECTORY_SEPARATOR . 'result' . $testId . '.json';
+        if (is_file($jsonResultFile)) {
+            ########################################## TestSuite Compiling ######################################
+            $io->note('Log2Test: Compiling TestsSuite' . $testId . ' results');
+            $jsonData = file_get_contents($jsonResultFile);
+            $testResults = json_decode($jsonData);
+            if ($testResults) {
+                foreach ($testResults as $result) {
+                    $nbErrors = sizeof($result->{Constants::ERROR});
+                    $totalError += $nbErrors;
+                    $nbSuccess = sizeof($result->{Constants::SUCCESS});
+                    $totalSuccess += $nbSuccess;
+                    $nbRedirect = sizeof($result->{Constants::REDIRECTED});
+                    $totalRedirect += $nbRedirect;
+                    $className = $result->className;
+                    $storedResult[$className] = [$nbErrors, $nbSuccess, $nbRedirect, $testId];
+                }
+            }
+        }
+    }
+
+    $mailXml = new \SimpleXMLElement('<testsuites name="Testing Global TestSuite" tests="' . $totalSuccess . '" errors="' . $totalError . '" disabled="' . $totalRedirect . '"></testsuites>');
+    foreach ($storedResult as $className => $result) {
+        $nbErrors = $result[0];
+        $nbSuccess = $result[1];
+        $nbRedirect = $result[2];
+        $testId = $result[3];
+        $mailXml->addChild('testsuite name="TestSuite' . $testId . ' ' . $className . '" tests="' . $nbSuccess . '" errors="' . $nbErrors . '" disabled="' . $nbRedirect .'"');
+    }
+    $mailXml->asXML('{{ testSuitePath }}/result.xml');
+    $io->note('Global tests Results Storred on ' . '{{ testSuitePath }}/result.xml');
+}
+
