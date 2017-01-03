@@ -28,7 +28,9 @@ $options = getopt("m:");
 $mode = (isset($options['m']) ? $options['m'] : '');
 
 if ('execute' === $mode || '' === $mode) {
-    for ($testId = 1; $testId <= {{ numberOfTestSuite }}; $testId++) {
+    $configParser = new ConfigParser();
+    $lastResultId = $configParser->getValueFromKey(Constants::LAST_RESULT_ID) + 1;
+    for ($testId = $lastResultId; $testId <= {{ numberOfTestSuite }}; $testId++, $lastResultId++) {
         if (is_dir('{{ testSuitePath }}/testSuite' . $testId . '/')) {
             ########################################## TestSuite Running ######################################
             $processResults = [];
@@ -46,6 +48,7 @@ if ('execute' === $mode || '' === $mode) {
             }
             $jsonResultFile = '{{ testSuitePath }}/testSuite' . $testId . '/result' . $testId . '.json';
             file_put_contents($jsonResultFile, json_encode($processResults, JSON_PRETTY_PRINT) , FILE_APPEND);
+            $configParser->updateConfigurationValue(Constants::LAST_RESULT_ID, $lastResultId);
             $io->note('Results Storred on ' . $jsonResultFile);
         }
     }

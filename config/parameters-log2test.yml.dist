@@ -13,6 +13,8 @@ parameters:
     encodedUrls: false
     enabledScreenshot: true
     log2testVersion: V1.4
-    currentTestSuiteId: 1
+    testSuiteId: 1
+    lastResultId: 1
     numberOfFileByTestSuite: 30
     testResultFormat: xml
+

@@ -139,12 +139,19 @@ class TestGenerator implements TestGeneratorInterface
     protected $currentNumberOfFileByTestSuite;
 
     /**
-     * Current Phpunit Test Suite ID
+     * Current Test Suite ID
      *
      * @var int
      */
     protected $testSuiteId;
 
+
+    /**
+     * Last generated ResultId / Allows Log2test to resume test to the correct testSuiteId
+     *
+     * @var int
+     */
+    protected $lastResultId;
 
 
     /**
@@ -153,8 +160,6 @@ class TestGenerator implements TestGeneratorInterface
      * @var string
      */
     protected $testResultFormat;
-
-
 
 
     /**
@@ -166,7 +171,7 @@ class TestGenerator implements TestGeneratorInterface
     public function __construct(ConfigParser $configParser, $logFile)
     {
         $this->setCurrentNumberOfFileByTestSuite(0);
-        $this->setTestSuiteId($configParser->getValueFromKey('currentTestSuiteId'));
+        $this->setTestSuiteId($configParser->getValueFromKey(Constants::TEST_SUITE_ID));
         $this->setConfigParser($configParser);
         $this->setLogFile($logFile);
         $this->setTestStack($configParser->getValueFromKey('testStack'));
@@ -183,8 +188,6 @@ class TestGenerator implements TestGeneratorInterface
         $this->setLog2testVersion($configParser->getValueFromKey('log2testVersion'));
         $this->setNumberOfFileByTestSuite($configParser->getValueFromKey('numberOfFileByTestSuite'));
         $this->setTestResultFormat($configParser->getValueFromKey('testResultFormat'));
-
-
     }
 
 
@@ -268,7 +271,7 @@ class TestGenerator implements TestGeneratorInterface
             $nextTestSuiteId = $this->getTestSuiteId() + 1;
             $this->setTestSuiteId($nextTestSuiteId);
             $this->setCurrentNumberOfFileByTestSuite(0);
-            $configParser->updateConfigurationValue(Constants::CURRENT_TEST_SUITE_ID, $nextTestSuiteId);
+            $configParser->updateConfigurationValue(Constants::TEST_SUITE_ID, $nextTestSuiteId);
         }
     }
 
@@ -725,6 +728,22 @@ class TestGenerator implements TestGeneratorInterface
     public function setTestResultFormat($testResultFormat)
     {
         $this->testResultFormat = $testResultFormat;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastResultId()
+    {
+        return $this->lastResultId;
+    }
+
+    /**
+     * @param int $lastResultId
+     */
+    public function setLastResultId($lastResultId)
+    {
+        $this->lastResultId = $lastResultId;
     }
 
 }
