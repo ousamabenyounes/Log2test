@@ -30,7 +30,7 @@ class {{ className }} extends {{ mainHostClassName }}
         $this->test{{ className | ucfirst }}Url{{ loop.index }}();
 {% endfor %}
         $this->runRequest();
-        $this->analyzeRequest();
+        $this->analyzeRequest($this->getForbiddenContents());
 
         return json_encode($this->getReporting(), JSON_PRETTY_PRINT);
     }

@@ -103,12 +103,12 @@ abstract class LogParser implements LogParserInterface
     protected $splFileObject;
 
 
-
-
-
-
-
-
+    /**
+     * List of forbidden Content
+     *
+     * @var array
+     */
+    protected $forbiddenContents;
 
     /**
      * LogParser constructor.
@@ -119,6 +119,7 @@ abstract class LogParser implements LogParserInterface
     {
         $this->setConfigParser($configParser);
         $this->setSplFileObject($splFile);
+        $this->setForbiddenContents($configParser->getValueFromKey('forbiddenContents'));
         $this->setHosts($configParser->getValueFromKey('hosts'));
         $this->setNumberOfLine($configParser->getValueFromKey('numberOfLine'));
         $this->setBeginLine($configParser->getValueFromKey(Constants::BEGIN_LINE));
@@ -415,6 +416,22 @@ abstract class LogParser implements LogParserInterface
     public function setSplFileObject($splFileObject)
     {
         $this->splFileObject = $splFileObject;
+    }
+
+    /**
+     * @return array
+     */
+    public function getForbiddenContents()
+    {
+        return $this->forbiddenContents;
+    }
+
+    /**
+     * @param array $forbiddenContents
+     */
+    public function setForbiddenContents($forbiddenContents)
+    {
+        $this->forbiddenContents = $forbiddenContents;
     }
 
 }
