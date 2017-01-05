@@ -125,7 +125,10 @@ class CurlTest
     }
 
 
-    public function analyzeRequest()
+    /**
+     * @param array $forbiddenContents
+     */
+    public function analyzeRequest($forbiddenContents)
     {
         $multiCurlCalls = $this->getMultiCurlCalls();
         foreach ($multiCurlCalls as $testId => $multiCurlCall) {
@@ -136,8 +139,7 @@ class CurlTest
             $httpCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
             $this->setHttpCode($httpCode);
             $data = curl_multi_getcontent($curlHandle);
-            if (curl_errno($curlHandle))
-            {
+            if (curl_errno($curlHandle)) {
                 $this->addReporting(Constants::ERROR, ' Curl error => "' . curl_error($curlHandle) . '"');
             } elseif (in_array($httpCode, [Constants::HTTP_MOVED_PERMANENTLY, Constants::HTTP_MOVED_TEMPORARLY])) {
                 $this->addReporting(Constants::REDIRECTED);
@@ -146,18 +148,30 @@ class CurlTest
             } elseif (empty($data)) {
                 $this->addReporting(Constants::ERROR, ' Empty Content ');
             } else {
-                $errors = Constants::getKnownPhpErrors();
-                foreach ($errors as $error)
-                {
-                    if (stripos($data, $error)) {
-                        $this->addReporting(Constants::ERROR,' Find a defined PHP Error => ' . $error);
-                    }
-                }
+                $this->strposFromArray($data, Constants::getKnownPhpErrors(), ' Find a defined PHP Error => ');
+                $this->strposFromArray($data, $forbiddenContents, ' Forbidden content found => ');
                 if (Constants::SUCCESS === $this->getTestStatus()) {
                     $this->addReporting(Constants::SUCCESS);
                 }
             }
         }
+    }
+
+    /**
+     * @param $haystack
+     * @param $needle
+     * @param int $offset
+     * @return bool
+     */
+    private function strposFromArray($haystack, $needle, $message) {
+        if (!is_array($needle)) $needle = array($needle);
+        foreach ($needle as $query) {
+            if (stripos($haystack, $query) !== false) {
+                $this->addReporting(Constants::ERROR, $message . "'" . $query . "'");
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

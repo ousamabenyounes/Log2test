@@ -4,7 +4,7 @@ Feature: Generate log2test Test in different stack
         Given apache2 Log File log/test.log
         When I generate "Curl" test
         Then "generated/Curl/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" was generated
-        And "generated/Curl/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" file_sha1 is equal to "3f843f2d9951c273afcf808ac942086e6dadfa51"
+        And "generated/Curl/Shoptoutlocal/testSuite1/ShoptoutlocalFrom0To30Test.php" file_sha1 is equal to "c87a7d36fab3bf18dc84d1897e397a85fde8d233"
 
     Scenario: Log2Test generates PhpunitCurl test from logFile
         Given apache2 Log File log/test.log

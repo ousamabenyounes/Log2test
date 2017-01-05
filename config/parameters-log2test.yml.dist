@@ -17,4 +17,4 @@ parameters:
     lastResultId: 1
     numberOfFileByTestSuite: 30
     testResultFormat: xml
-
+    forbiddenContents: []
