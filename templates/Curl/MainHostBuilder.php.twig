@@ -37,6 +37,13 @@ class {{ className }} extends CurlTest
     }
 
 
+    protected function getForbiddenContents()
+    {
+        return [{% for forbiddenContent in forbiddenContents %}'{{ forbiddenContent }}'{% if not loop.last %},{% endif %}
+{% endfor %}];
+    }
+
+
 
 {% if true == enabledScreenshot %}
     /**

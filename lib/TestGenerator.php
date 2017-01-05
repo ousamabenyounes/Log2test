@@ -282,6 +282,7 @@ class TestGenerator implements TestGeneratorInterface
     public function generateAllMainTestClass(ProgressBar $progressBar)
     {
         $currentPath = __DIR__ . '/../';
+        $forbiddenContents = $this->getConfigParser()->getValueFromKey('forbiddenContents');
         foreach ($this->getTestConfiguration() as $key => $hostConfig) {
             $host = $hostConfig['dest'];
             $hostCleaned = ucfirst(Utils::urlToString($host));
@@ -304,6 +305,7 @@ class TestGenerator implements TestGeneratorInterface
                 'logFile'           => $this->getLogFile(),
                 'enabledScreenshot' => $this->isEnabledScreenshot(),
                 'browsers'          => $this->getBrowsers(),
+                'forbiddenContents' => $forbiddenContents
             ));
             $generator->addBuilder($builder);
             $generator->writeOnDisk($hostDirectory);
@@ -366,6 +368,7 @@ class TestGenerator implements TestGeneratorInterface
             $process = new Process('php ' . $hostTestPath . Constants::LAUNCHER_FILE);
             $process->setTimeout(null);
             $process->setIdleTimeout(null);
+
             $process->run(function ($type, $buffer) use($printInfo, $io) {
                 if (Process::ERR === $type) {
                     $io->error($buffer);
@@ -375,6 +378,7 @@ class TestGenerator implements TestGeneratorInterface
                     }
                 }
             });
+
         }
     }
 
