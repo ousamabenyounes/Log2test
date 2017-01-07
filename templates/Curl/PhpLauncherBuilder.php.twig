@@ -49,7 +49,7 @@ if ('execute' === $mode || '' === $mode) {
             $jsonResultFile = '{{ testSuitePath }}/testSuite' . $testId . '/result' . $testId . '.json';
             file_put_contents($jsonResultFile, json_encode($processResults, JSON_PRETTY_PRINT) , FILE_APPEND);
             $configParser->updateConfigurationValue(Constants::LAST_RESULT_ID, $lastResultId);
-            $io->note('Results Storred on ' . $jsonResultFile);
+            $io->note('Results Stored on ' . $jsonResultFile);
         }
     }
 }
@@ -92,6 +92,6 @@ if ('compileResult' === $mode || '' === $mode) {
         $mailXml->addChild('testsuite name="TestSuite' . $testId . ' ' . $className . '" tests="' . $nbSuccess . '" errors="' . $nbErrors . '" disabled="' . $nbRedirect .'"');
     }
     $mailXml->asXML('{{ testSuitePath }}/result.xml');
-    $io->note('Global tests Results Storred on ' . '{{ testSuitePath }}/result.xml');
+    $io->note('Global tests Results Stored on ' . '{{ testSuitePath }}/result.xml');
 }
 
