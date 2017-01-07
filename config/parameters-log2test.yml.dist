@@ -1,5 +1,5 @@
 parameters:
-    hosts: [[www.shop2tout.com, www.shop2tout.local]]
+    hosts: [www.shop2tout.com]
     logFile: log/test.log
     testStack: Curl
     beginLine: 0
