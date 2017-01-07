@@ -45,6 +45,6 @@ if ('execute' === $mode || '' === $mode) {
         }
         file_put_contents('generated/Curl/Shoptoutlocal/testSuite' . $testId . '/result' . $testId . '.json',
             json_encode($processResults, JSON_PRETTY_PRINT) , FILE_APPEND);
-        $io->note('Results Storred on ' . 'generated/Curl/Shoptoutlocal/testSuite' . $testId . '/result' . $testId . '.json');
+        $io->note('Results Stored on ' . 'generated/Curl/Shoptoutlocal/testSuite' . $testId . '/result' . $testId . '.json');
     }
 }
