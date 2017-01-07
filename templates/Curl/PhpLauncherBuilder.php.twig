@@ -29,9 +29,10 @@ $mode = (isset($options['m']) ? $options['m'] : '');
 
 if ('execute' === $mode || '' === $mode) {
     $configParser = new ConfigParser();
-    $lastResultId = $configParser->getValueFromKey(Constants::LAST_RESULT_ID) + 1;
+    $lastResultId = $configParser->getValueFromKey(Constants::LAST_RESULT_ID);
     for ($testId = $lastResultId; $testId <= {{ numberOfTestSuite }}; $testId++, $lastResultId++) {
-        if (is_dir('{{ testSuitePath }}/testSuite' . $testId . '/')) {
+        if (is_dir('{{ testSuitePath }}/testSuite' . $testId . '/')
+        && (!is_file('{{ testSuitePath }}/testSuite' . $testId . '/result' . $testId . '.json'))) {
             ########################################## TestSuite Running ######################################
             $processResults = [];
             $io->title('Log2Test: Running TestsSuite' . $testId);
@@ -54,7 +55,7 @@ if ('execute' === $mode || '' === $mode) {
     }
 }
 
-if ('compileResult' === $mode || '' === $mode) {
+if (('compileResult' === $mode || '' === $mode) && (!is_file('{{ testSuitePath }}/result.xml')) ) {
     $totalError = 0;
     $totalSuccess = 0;
     $totalRedirect = 0;
@@ -92,6 +93,8 @@ if ('compileResult' === $mode || '' === $mode) {
         $mailXml->addChild('testsuite name="TestSuite' . $testId . ' ' . $className . '" tests="' . $nbSuccess . '" errors="' . $nbErrors . '" disabled="' . $nbRedirect .'"');
     }
     $mailXml->asXML('{{ testSuitePath }}/result.xml');
-    $io->note('Global tests Results Stored on ' . '{{ testSuitePath }}/result.xml');
+    $io->note('Results Stored on {{ testSuitePath }}/result.xml');
+} else {
+    $io->note('Results Found on {{ testSuitePath }}/result.xml');
 }
 
