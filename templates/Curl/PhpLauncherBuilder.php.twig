@@ -55,7 +55,7 @@ if ('execute' === $mode || '' === $mode) {
     }
 }
 
-if (('compileResult' === $mode || '' === $mode) && (!is_file('{{ testSuitePath }}/result.xml')) ) {
+if (('compileResult' === $mode || '' === $mode) && (!is_file('{{ buildPath }}result.xml')) ) {
     $totalError = 0;
     $totalSuccess = 0;
     $totalRedirect = 0;
@@ -93,8 +93,8 @@ if (('compileResult' === $mode || '' === $mode) && (!is_file('{{ testSuitePath }
         $mailXml->addChild('testsuite name="TestSuite' . $testId . ' ' . $className . '" tests="' . $nbSuccess . '" errors="' . $nbErrors . '" disabled="' . $nbRedirect .'"');
     }
     $mailXml->asXML('{{ buildPath }}result.xml');
-    $io->note('Results Stored on {{ testSuitePath }}/result.xml');
+    $io->note('Results Stored on {{ buildPath }}result.xml');
 } else {
-    $io->note('Results Found on {{ testSuitePath }}/result.xml');
+    $io->note('Results Found on {{ buildPath }}result.xml');
 }
 
