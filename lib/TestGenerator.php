@@ -344,6 +344,7 @@ class TestGenerator implements TestGeneratorInterface
                 'numberOfTestSuite' => $this->getTestSuiteId(),
                 'testSuitePath'  => $testPath,
                 'testResultFormat'  => $this->getTestResultFormat(),
+                'buildPath' => Constants::BUILD_DIR
             ));
             $generator->addBuilder($launcherBuilder);
             $generator->writeOnDisk($currentPath . $hostTestPath);
