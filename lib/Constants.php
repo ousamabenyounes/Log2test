@@ -93,6 +93,7 @@ final class Constants
     const TESTS_SCREENSHOT_PATH = 'generated/screenshots/';
 
     const BIN_DIR = 'bin/';
+    const BUILD_DIR = 'build/';
     const LOG2TEST_BIN = 'log2test';
 
     const ERROR = 'error';
