@@ -51,7 +51,7 @@ Here are all the configuration file's properties:
 | testStack | String | Available test stack: "PhpunitSelenium" or "Curl" or "PhpunitCurl | Curl |
 | beginLine | Int | Begin parsing at line X | 0 |
 | numberOfLine | Int | Number of lines to parse | 300 |
-| logParserClass | String | Your log parsing class | \Log2Test\Apache2LogParser |
+| logParserClass | String | Your log parsing class | \Log2Test\Parser\Log\Apache2LogParser |
 | logFormat | String | Detail the log format of your acces log file | '%h %l %u %t \"%r\" %>s %b' |
 | extensions_allowed | Array | Only parse files matching these extentions | [php, html] |
 | browsers | Array | List of browsers -> only for phpunit_selenium stack | chrome |  

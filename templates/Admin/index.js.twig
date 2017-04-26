@@ -1,0 +1,62 @@
+<!-- jQuery -->
+<script src="vendors/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="vendors/bootstrap/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="vendors/fastclick.js"></script>
+
+    <!-- Chart.js -->
+    <script src="vendors/Chart.min.js"></script>
+
+
+
+
+    <!-- Custom Theme Scripts -->
+<script language="JavaScript">
+
+    $(document).ready(function() {
+        if( typeof (Chart) === 'undefined'){ return; }
+
+        if ($('.canvasDoughnut').length){
+
+            var chart_doughnut_settings = {
+                type: 'doughnut',
+                tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+                data: {
+                    labels: [
+                        "Success",
+                        "Redirections",
+                        "Errors"
+                    ],
+                    datasets: [{
+                        data: [{{ successPourcent}}, {{ disabledPourcent}},  {{ errorPourcent}},],
+                        backgroundColor: [
+
+                            "#008000",
+                            "#B8B8B8",
+                            "#FF0000"
+                        ],
+                        hoverBackgroundColor: [
+                            "#006800",
+                            "#A8A8A8",
+                            "#980000",
+                        ]
+                    }]
+                },
+                options: {
+                    legend: false,
+                    responsive: false
+                }
+            }
+
+            $('.canvasDoughnut').each(function(){
+
+                var chart_element = $(this);
+                var chart_doughnut = new Chart( chart_element, chart_doughnut_settings);
+
+            });
+
+        }
+
+    });
+</script>
