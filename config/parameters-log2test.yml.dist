@@ -4,7 +4,7 @@ parameters:
     testStack: Curl
     beginLine: 0
     numberOfLine: 30
-    logParserClass: \Log2Test\Apache2LogParser
+    logParserClass: \Log2Test\Parser\Log\Apache2LogParser
     logFormat: '%h %l %u %t \"%r\" %>s %b'
     extensions_allowed: ['*']
     browsers: ['*chrome']
@@ -18,3 +18,5 @@ parameters:
     numberOfFileByTestSuite: 30
     testResultFormat: xml
     forbiddenContents: []
+    builds: []
+    numberOfBuild: 5

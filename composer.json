@@ -61,9 +61,14 @@
     "autoload": {
         "psr-4" : {
             "Log2Test\\" : "lib/",
+            "Log2Test\\Builder\\" : "lib/Builder/",
+            "Log2Test\\Builder\\Admin\\" : "lib/Builder/Admin/",
+            "Log2Test\\Parser\\" : "lib/Parser/",
+            "Log2Test\\Parser\\Log\\" : "lib/Parser/Log/",
             "Log2Test\\Generated\\Curl\\" : "generated/Curl/",
             "Log2Test\\Generated\\PhpunitCurl\\" : "generated/PhpunitCurl/",
             "Log2Test\\Generated\\Selenium\\" : "generated/PhpunitSelenium/"
+
         }
     },
     "config":  {
