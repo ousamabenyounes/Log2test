@@ -1,7 +1,6 @@
 <?php
 
-namespace Log2Test;
-
+namespace Log2Test\Parser;
 
 
 abstract class LogParser implements LogParserInterface
@@ -122,7 +121,7 @@ abstract class LogParser implements LogParserInterface
         $this->setForbiddenContents($configParser->getValueFromKey('forbiddenContents'));
         $this->setHosts($configParser->getValueFromKey('hosts'));
         $this->setNumberOfLine($configParser->getValueFromKey('numberOfLine'));
-        $this->setBeginLine($configParser->getValueFromKey(Constants::BEGIN_LINE));
+        $this->setBeginLine($configParser->getValueFromKey(\Log2Test\Constants::BEGIN_LINE));
         $this->setEndLine($this->getBeginLine() + $this->getNumberOfLine());
         $this->setBrowsers($configParser->getValueFromKey('browsers'));
         $this->setExtensionsAllowed($configParser->getValueFromKey('extensions_allowed'));
@@ -148,8 +147,8 @@ abstract class LogParser implements LogParserInterface
         $numberOfLine = $this->getNumberOfLine();
         $file = $this->getSplFileObject();
         foreach ($hosts as $hostConfig) {
-            $dest = $hostConfig[Constants::HOST_DEST];
-            $host = $hostConfig[Constants::HOST_SOURCE];
+            $dest = $hostConfig[\Log2Test\Constants::HOST_DEST];
+            $host = $hostConfig[\Log2Test\Constants::HOST_SOURCE];
             $testConfiguration = $this->getTestConfiguration();
             $testConfiguration[$host] = (!isset($testConfiguration[$host]) ? [] : $testConfiguration[$host]);
             $testConfiguration[$host]['paths'] =
@@ -232,8 +231,8 @@ abstract class LogParser implements LogParserInterface
         foreach ($hosts as $host) {
             if (is_array($host))
             {
-                $finalDest = $host[Constants::HOST_DEST];
-                $finalHost = $host[Constants::HOST_SOURCE];
+                $finalDest = $host[\Log2Test\Constants::HOST_DEST];
+                $finalHost = $host[\Log2Test\Constants::HOST_SOURCE];
             } else {
                 $finalDest = $finalHost = $host;
             }

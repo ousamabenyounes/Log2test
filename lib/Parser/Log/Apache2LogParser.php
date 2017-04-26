@@ -1,6 +1,7 @@
 <?php
 
-namespace Log2Test;
+namespace Log2Test\Parser;
+
 
 use Kassner\LogParser as KassnerLogParser;
 
@@ -39,12 +40,12 @@ class Apache2LogParser extends LogParser
         if (isset($parsedLine->host) &&
             isset($parsedLine->request) &&
             $this->inArrayRecursif($parsedLine->host, $this->getHosts())) {
-            $requestConfig = explode(Constants::SPACE_CHAR, $parsedLine->request);
-            $path = $requestConfig[Constants::REQUEST_PATH];
-            $method = $requestConfig[Constants::REQUEST_METHOD];
+            $requestConfig = explode(\Log2Test\Constants::SPACE_CHAR, $parsedLine->request);
+            $path = $requestConfig[\Log2Test\Constants::REQUEST_PATH];
+            $method = $requestConfig[\Log2Test\Constants::REQUEST_METHOD];
             $parsedUrl = parse_url($path);
             $extension = pathinfo($parsedUrl['path'], PATHINFO_EXTENSION);
-            if (Constants::METHOD_GET === $method &&
+            if (\Log2Test\Constants::METHOD_GET === $method &&
                 (in_array($extension, $this->getExtensionsAllowed()) ||
                     in_array('*', $this->getExtensionsAllowed()) )
             )

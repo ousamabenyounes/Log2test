@@ -14,6 +14,13 @@ class ConfigParser
      */
     protected $configCache;
 
+    public function __construct($rootDir = '')
+    {
+        $config = Yaml::parse(file_get_contents($rootDir . Constants::PARAMETER_FILE));
+        $this->setConfigCache($config);
+    }
+
+
     /**
      * Get Value From configuration
      *
@@ -25,10 +32,6 @@ class ConfigParser
     public function getValueFromKey($key)
     {
         $config = $this->getConfigCache();
-        if (null === $config) {
-            $config = Yaml::parse(file_get_contents(Constants::PARAMETER_FILE));
-            $this->setConfigCache($config);
-        }
         if (isset($config['parameters'][$key])) {
             return $config['parameters'][$key];
         } else {

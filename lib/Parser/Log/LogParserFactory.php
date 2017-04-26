@@ -1,6 +1,6 @@
 <?php
 
-namespace Log2Test;
+namespace Log2Test\Parser;
 
 class LogParserFactory
 {
