@@ -3,9 +3,16 @@
 namespace Log2Test;
 
 
+use Log2Test\Builder\Admin\IndexBuilder;
+use Log2Test\Builder\MainHostBuilder;
+use Log2Test\Builder\TestUrlsBuilder;
+use Log2Test\Parser\ConfigParser;
+use Log2Test\Parser\ResultParser;
+use SebastianBergmann\CodeCoverage\Util;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Filesystem\Filesystem;
 use TwigGenerator\Builder\Generator;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -163,31 +170,56 @@ class TestGenerator implements TestGeneratorInterface
 
 
     /**
+     * @var ResultParser
+     */
+    protected $resultParser;
+
+
+    /**
+     * NumberOfBuild
+     *
+     * @var int
+     */
+    protected $numberOfBuild;
+
+    /**
+     * Global Test Configuration Array
+     * Contains all urls by host
+     *
+     * @var array
+     */
+    protected $buils;
+
+
+    /**
      * LogParser constructor.
      * @param ConfigParser  $configParser
      * @param String        $logFile
      * @param Array
      */
-    public function __construct(ConfigParser $configParser, $logFile)
+    public function __construct(\Log2Test\Parser\ConfigParser $configParser, $logFile)
     {
         $this->setCurrentNumberOfFileByTestSuite(0);
-        $this->setTestSuiteId($configParser->getValueFromKey(Constants::TEST_SUITE_ID));
+        $this->setTestSuiteId($configParser->getValueFromCache(Constants::TEST_SUITE_ID));
         $this->setConfigParser($configParser);
         $this->setLogFile($logFile);
-        $this->setTestStack($configParser->getValueFromKey('testStack'));
-        $this->setHosts($configParser->getValueFromKey('hosts'));
-        $this->setNumberOfLine($configParser->getValueFromKey('numberOfLine'));
-        $this->setBeginLine($configParser->getValueFromKey(Constants::BEGIN_LINE));
+        $this->setTestStack($configParser->getValueFromCache('testStack'));
+        $this->setHosts($configParser->getValueFromCache('hosts'));
+        $this->setNumberOfLine($configParser->getValueFromCache('numberOfLine'));
+        $this->setBeginLine($configParser->getValueFromCache(Constants::BEGIN_LINE));
         $this->setEndLine($this->getBeginLine() + $this->getNumberOfLine());
-        $this->setBrowsers($configParser->getValueFromKey('browsers'));
-        $this->setExtensionsAllowed($configParser->getValueFromKey('extensions_allowed'));
-        $this->setRemoveDuplicateUrl($configParser->getValueFromKey('removeDuplicateUrl'));
-        $this->setPauseBetweenTests($configParser->getValueFromKey('pauseBetweenTests'));
-        $this->setEncodedUrls($configParser->getValueFromKey('encodedUrls'));
-        $this->setEnabledScreenshot($configParser->getValueFromKey('enabledScreenshot'));
-        $this->setLog2testVersion($configParser->getValueFromKey('log2testVersion'));
-        $this->setNumberOfFileByTestSuite($configParser->getValueFromKey('numberOfFileByTestSuite'));
-        $this->setTestResultFormat($configParser->getValueFromKey('testResultFormat'));
+        $this->setBrowsers($configParser->getValueFromCache('browsers'));
+        $this->setExtensionsAllowed($configParser->getValueFromCache('extensions_allowed'));
+        $this->setRemoveDuplicateUrl($configParser->getValueFromCache('removeDuplicateUrl'));
+        $this->setPauseBetweenTests($configParser->getValueFromCache('pauseBetweenTests'));
+        $this->setEncodedUrls($configParser->getValueFromCache('encodedUrls'));
+        $this->setEnabledScreenshot($configParser->getValueFromCache('enabledScreenshot'));
+        $this->setLog2testVersion($configParser->getValueFromCache('log2testVersion'));
+        $this->setNumberOfFileByTestSuite($configParser->getValueFromCache('numberOfFileByTestSuite'));
+        $this->setTestResultFormat($configParser->getValueFromCache('testResultFormat'));
+        $this->setBuils($configParser->getValueFromCache('builds'));
+        $this->setNumberOfBuild($configParser->getValueFromCache('numberOfBuild'));
+
     }
 
 
@@ -282,7 +314,7 @@ class TestGenerator implements TestGeneratorInterface
     public function generateAllMainTestClass(ProgressBar $progressBar)
     {
         $currentPath = __DIR__ . '/../';
-        $forbiddenContents = $this->getConfigParser()->getValueFromKey('forbiddenContents');
+        $forbiddenContents = $this->getConfigParser()->getValueFromCache('forbiddenContents');
         foreach ($this->getTestConfiguration() as $key => $hostConfig) {
             $host = $hostConfig['dest'];
             $hostCleaned = ucfirst(Utils::urlToString($host));
@@ -333,8 +365,8 @@ class TestGenerator implements TestGeneratorInterface
             ));
             $generator->setMustOverwriteIfExists(true);
             
-            $launcherClass = (Constants::CURL_TEST === $this->getTestStack() ? 'Log2Test\PhpLauncherBuilder' :
-                'Log2Test\PhpunitLauncherBuilder');
+            $launcherClass = (Constants::CURL_TEST === $this->getTestStack() ? 'Log2Test\Builder\PhpLauncherBuilder' :
+                'Log2Test\Builder\PhpunitLauncherBuilder');
             $launcherBuilder = new $launcherClass();
             $launcherFile = ('Curl' === $this->getTestStack() ? Constants::LAUNCHER_FILE : Constants::PHPUNIT_LAUNCHER_SHELL_FILE);
             $launcherBuilder->setOutputName($launcherFile);
@@ -344,7 +376,7 @@ class TestGenerator implements TestGeneratorInterface
                 'numberOfTestSuite' => $this->getTestSuiteId(),
                 'testSuitePath'  => $testPath,
                 'testResultFormat'  => $this->getTestResultFormat(),
-                'buildPath' => Constants::BUILD_DIR
+                'buildPath' => Constants::BUILD_DIR . DIRECTORY_SEPARATOR
             ));
             $generator->addBuilder($launcherBuilder);
             $generator->writeOnDisk($currentPath . $hostTestPath);
@@ -416,7 +448,35 @@ class TestGenerator implements TestGeneratorInterface
     }
 
 
-    /********** GETTER AND SETTERS ************/
+
+    /**
+     * Archive previous results
+     */
+    public function archiveResult()
+    {
+        $resultParser = new ResultParser();
+        $fs = new Filesystem();
+        $this->setResultParser($resultParser);
+        if (NULL !== $resultParser->getCache()) {
+            $testDatetime = (string) $resultParser->getValueFromCache('datetime');
+            $dateTimeDirectory = Constants::BUILD_DIR . DIRECTORY_SEPARATOR . $testDatetime . DIRECTORY_SEPARATOR;
+            $builds = $this->getBuils();
+            $numberOfBuildFromConf = $this->getNumberOfBuild();
+            $numberOfBuild = sizeof($builds) + 1;
+            while ($numberOfBuild > $numberOfBuildFromConf)
+            {
+                $removedBuild = array_shift($builds);
+                $fs->remove(Constants::BUILD_DIR . DIRECTORY_SEPARATOR . $removedBuild);
+                $numberOfBuild--;
+            }
+            Utils::createDir($dateTimeDirectory);
+            $fs->rename(Constants::BUILD_DIR . DIRECTORY_SEPARATOR . Constants::RESULT_XML_FILE, $dateTimeDirectory . Constants::RESULT_XML_FILE);
+            $builds[] = $testDatetime;
+            $this->getConfigParser()->updateConfigurationValue('builds', $builds);
+        }
+    }
+
+/********** GETTER AND SETTERS ************/
 
     /**
      * @return string
@@ -749,6 +809,54 @@ class TestGenerator implements TestGeneratorInterface
     public function setLastResultId($lastResultId)
     {
         $this->lastResultId = $lastResultId;
+    }
+
+    /**
+     * @return ResultParser
+     */
+    public function getResultParser()
+    {
+        return $this->resultParser;
+    }
+
+    /**
+     * @param ResultParser $resultParser
+     */
+    public function setResultParser($resultParser)
+    {
+        $this->resultParser = $resultParser;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumberOfBuild()
+    {
+        return $this->numberOfBuild;
+    }
+
+    /**
+     * @param int $numberOfBuild
+     */
+    public function setNumberOfBuild($numberOfBuild)
+    {
+        $this->numberOfBuild = $numberOfBuild;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBuils()
+    {
+        return $this->buils;
+    }
+
+    /**
+     * @param array $buils
+     */
+    public function setBuils($buils)
+    {
+        $this->buils = $buils;
     }
 
 }
