@@ -1,58 +1,36 @@
 <?php
 
-namespace Log2Test;
+namespace Log2Test\Parser;
 
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
-class ConfigParser
+class ConfigParser extends Parser
 {
-    /**
-     * Cache of current configuration array
-     *
-     * @var array
-     */
-    protected $configCache;
 
     public function __construct($rootDir = '')
     {
-        $config = Yaml::parse(file_get_contents($rootDir . Constants::PARAMETER_FILE));
-        $this->setConfigCache($config);
+        $config = Yaml::parse(file_get_contents($rootDir . \Log2Test\Constants::PARAMETER_FILE));
+        $this->setCache($config);
     }
 
 
     /**
-     * Get Value From configuration
+     * Get Value From Cache
      *
      * @param  string $key
      *
      * @return mixed
      * @throws ParseException
      */
-    public function getValueFromKey($key)
+    public function getValueFromCache($key)
     {
-        $config = $this->getConfigCache();
+        $config = $this->getCache();
         if (isset($config['parameters'][$key])) {
             return $config['parameters'][$key];
         } else {
-            throw new ParseException('Key "' . $key. '"  Not Found on "' . Constants::PARAMETER_FILE . '" file');
+            throw new ParseException('Key "' . $key. '"  Not Found on "' . \Log2Test\Constants::PARAMETER_FILE . '" file');
         }
-    }
-
-    /**
-     * @return array
-     */
-    public function getConfigCache()
-    {
-        return $this->configCache;
-    }
-
-    /**
-     * @param array $configCache
-     */
-    public function setConfigCache($configCache)
-    {
-        $this->configCache = $configCache;
     }
 
     /**
@@ -61,10 +39,12 @@ class ConfigParser
      */
     public function updateConfigurationValue($key, $value)
     {
-        $config = $this->getConfigCache();
-        $config['parameters'][$key] = $value;
-        Utils::saveYamlContent(Constants::PARAMETER_FILE, $config);
-        $this->setConfigCache($config);
+        $cache = $this->getCache();
+        $cache['parameters'][$key] = $value;
+        \Log2Test\Utils::saveYamlContent(\Log2Test\Constants::PARAMETER_FILE, $cache);
+        $this->setCache($cache);
     }
 
 }
+
+

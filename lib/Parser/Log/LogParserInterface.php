@@ -1,6 +1,6 @@
 <?php
 
-namespace Log2Test\Parser;
+namespace Log2Test\Parser\Log;
 
 
 /**

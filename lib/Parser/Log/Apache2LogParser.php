@@ -1,9 +1,10 @@
 <?php
 
-namespace Log2Test\Parser;
+namespace Log2Test\Parser\Log;
 
 
 use Kassner\LogParser as KassnerLogParser;
+use Log2Test\Parser\ConfigParser;
 
 
 class Apache2LogParser extends LogParser
@@ -26,7 +27,7 @@ class Apache2LogParser extends LogParser
     public function __construct(ConfigParser $configParser, \SplFileObject $splFile)
     {
         parent::__construct($configParser, $splFile);
-        $this->setLogFormat($configParser->getValueFromKey('logFormat'));
+        $this->setLogFormat($configParser->getValueFromCache('logFormat'));
         $this->setKassnerLogParser(new \Kassner\LogParser\LogParser($this->getLogFormat()));
     }
 

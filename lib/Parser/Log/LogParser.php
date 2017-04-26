@@ -1,7 +1,8 @@
 <?php
 
-namespace Log2Test\Parser;
+namespace Log2Test\Parser\Log;
 
+use Log2Test\Parser\ConfigParser;
 
 abstract class LogParser implements LogParserInterface
 {
@@ -118,19 +119,19 @@ abstract class LogParser implements LogParserInterface
     {
         $this->setConfigParser($configParser);
         $this->setSplFileObject($splFile);
-        $this->setForbiddenContents($configParser->getValueFromKey('forbiddenContents'));
-        $this->setHosts($configParser->getValueFromKey('hosts'));
-        $this->setNumberOfLine($configParser->getValueFromKey('numberOfLine'));
-        $this->setBeginLine($configParser->getValueFromKey(\Log2Test\Constants::BEGIN_LINE));
+        $this->setForbiddenContents($configParser->getValueFromCache('forbiddenContents'));
+        $this->setHosts($configParser->getValueFromCache('hosts'));
+        $this->setNumberOfLine($configParser->getValueFromCache('numberOfLine'));
+        $this->setBeginLine($configParser->getValueFromCache(\Log2Test\Constants::BEGIN_LINE));
         $this->setEndLine($this->getBeginLine() + $this->getNumberOfLine());
-        $this->setBrowsers($configParser->getValueFromKey('browsers'));
-        $this->setExtensionsAllowed($configParser->getValueFromKey('extensions_allowed'));
-        $this->setRemoveDuplicateUrl($configParser->getValueFromKey('removeDuplicateUrl'));
-        $this->setEncodedUrls($configParser->getValueFromKey('encodedUrls'));
-        $this->setEnabledScreenshot($configParser->getValueFromKey('enabledScreenshot'));
+        $this->setBrowsers($configParser->getValueFromCache('browsers'));
+        $this->setExtensionsAllowed($configParser->getValueFromCache('extensions_allowed'));
+        $this->setRemoveDuplicateUrl($configParser->getValueFromCache('removeDuplicateUrl'));
+        $this->setEncodedUrls($configParser->getValueFromCache('encodedUrls'));
+        $this->setEnabledScreenshot($configParser->getValueFromCache('enabledScreenshot'));
 
         // Reset current seek cursor to begin Line
-        $splFile->seek($configParser->getValueFromKey('beginLine'));
+        $splFile->seek($configParser->getValueFromCache('beginLine'));
     }
 
     public function getCurrentConfiguration()

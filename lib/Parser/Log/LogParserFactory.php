@@ -1,6 +1,8 @@
 <?php
 
-namespace Log2Test\Parser;
+namespace Log2Test\Parser\Log;
+
+use Log2Test\Parser\ConfigParser;
 
 class LogParserFactory
 {
@@ -13,8 +15,8 @@ class LogParserFactory
     public static function create()
     {
         $configParser = new ConfigParser();
-        $logParserClass = $configParser->getValueFromKey('logParserClass');
-        $logFile = $configParser->getValueFromKey('logFile');
+        $logParserClass = $configParser->getValueFromCache('logParserClass');
+        $logFile = $configParser->getValueFromCache('logFile');
         $splFile = new \SplFileObject($logFile);
 
         return new $logParserClass($configParser, $splFile);
