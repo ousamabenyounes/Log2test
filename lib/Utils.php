@@ -104,7 +104,22 @@ trait Utils
      * @return mixed
      */
     public static function rutime($ru, $rus, $index) {
-    return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))
+        return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))
     -  ($rus["ru_$index.tv_sec"]*1000 + intval($rus["ru_$index.tv_usec"]/1000));
-}
+    }
+
+
+    /**
+     * @param $nombre
+     * @param $total
+     * @param $pourcentage
+     *
+     * @return float
+     */
+    public static function percent($nombre, $total, $pourcentage)
+    {
+        $resultat = ($nombre / $total) * $pourcentage;
+
+        return round($resultat);
+    }
 }

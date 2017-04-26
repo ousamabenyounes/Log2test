@@ -11,15 +11,11 @@ namespace Log2Test;
 
 require_once('vendor/autoload.php');
 
-use SebastianBergmann\CodeCoverage\Util;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
-
-
 
 $output = new ConsoleOutput();
 $output->setFormatter(new OutputFormatter(true));
@@ -29,12 +25,12 @@ $io = new SymfonyStyle(new ArrayInput([]), $output);
 $options = getopt("m:");
 $mode = (isset($options['m']) ? $options['m'] : '');
 
-$configParser = new ConfigParser();
-$logFile = $configParser->getValueFromKey('logFile');
+$configParser = new \Log2Test\Parser\ConfigParser();
+$logFile = $configParser->getValueFromCache('logFile');
 $testGenerator = new TestGenerator($configParser, $logFile);
 
 if ('generate' === $mode || '' === $mode) {
-    $logParser = LogParserFactory::create();
+    $logParser = \Log2Test\Parser\Log\LogParserFactory::create();
     $time_start = microtime(true);
     $io->title('Log2Test: Generating all ' . $testGenerator->getTestStack() .' tests');
     $splFile = new \SplFileObject($logFile, 'r');
@@ -70,6 +66,7 @@ if ('generate' === $mode || '' === $mode) {
 }
 
 if ('execute' === $mode || '' === $mode) {
+    $testGenerator->archiveResult();
     $time_start = microtime(true);
     $testGenerator->generateTestSuiteLauncher();
     $executionCall = ('Curl' === $testGenerator->getTestStack() ? 'executeCurl' : 'executePhpunit');
@@ -79,5 +76,4 @@ if ('execute' === $mode || '' === $mode) {
     $timeTotal = (float) round($time_end - $time_start, 3);
     $io->note('Test execution time: ' . $timeTotal . ' seconds');
 }
-
 
