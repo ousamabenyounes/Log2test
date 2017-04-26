@@ -28,8 +28,8 @@ $options = getopt("m:");
 $mode = (isset($options['m']) ? $options['m'] : '');
 
 if ('execute' === $mode || '' === $mode) {
-    $configParser = new ConfigParser();
-    $lastResultId = $configParser->getValueFromKey(Constants::LAST_RESULT_ID);
+    $configParser = new \Log2Test\Parser\ConfigParser();
+    $lastResultId = $configParser->getValueFromCache(Constants::LAST_RESULT_ID);
     for ($testId = $lastResultId; $testId <= {{ numberOfTestSuite }}; $testId++, $lastResultId++) {
         if (is_dir('{{ testSuitePath }}/testSuite' . $testId . '/')
         && (!is_file('{{ testSuitePath }}/testSuite' . $testId . '/result' . $testId . '.json'))) {
@@ -84,15 +84,20 @@ if (('compileResult' === $mode || '' === $mode) && (!is_file('{{ buildPath }}res
         }
     }
 
-    $mailXml = new \SimpleXMLElement('<testsuites name="Testing Global TestSuite" tests="' . $totalSuccess . '" errors="' . $totalError . '" disabled="' . $totalRedirect . '"></testsuites>');
+    $totalTests = $totalSuccess + $totalError + $totalRedirect;
+    $datetime = date('Y-m-d_H-i-s');
+    $mainXml = new \SimpleXMLElement('<testsuites name="Testing Global TestSuite" tests="' . $totalSuccess . '" errors="' .
+        $totalError . '" disabled="' . $totalRedirect . '"  totalTests="' . $totalTests . '" datetime="' . $datetime . '" ></testsuites>');
+
     foreach ($storedResult as $className => $result) {
         $nbErrors = $result[0];
         $nbSuccess = $result[1];
         $nbRedirect = $result[2];
         $testId = $result[3];
-        $mailXml->addChild('testsuite name="TestSuite' . $testId . ' ' . $className . '" tests="' . $nbSuccess . '" errors="' . $nbErrors . '" disabled="' . $nbRedirect .'"');
+        $total = $nbErrors + $nbSuccess + $nbRedirect;
+        $mainXml->addChild('testsuite name="TestSuite' . $testId . ' ' . $className . '" tests="' . $nbSuccess . '" errors="' . $nbErrors . '" disabled="' . $nbRedirect . '" total="' . $total . '" ');
     }
-    $mailXml->asXML('{{ buildPath }}result.xml');
+    $mainXml->asXML('{{ buildPath }}result.xml');
     $io->note('Results Stored on {{ buildPath }}result.xml');
 } else {
     $io->note('Results Found on {{ buildPath }}result.xml');

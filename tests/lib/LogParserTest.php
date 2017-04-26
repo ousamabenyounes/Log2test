@@ -3,6 +3,7 @@
 namespace Log2Test;
 
 use Log2Test\LogParser;
+use Log2Test\Parser\Log\Apache2LogParser;
 
 class LogParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,18 +40,18 @@ class LogParserTest extends \PHPUnit_Framework_TestCase
 
     private function initConfigParserMock()
     {
-        $configParserMock = \Phake::mock('\Log2Test\ConfigParser');
-        \Phake::when($configParserMock)->getValueFromKey(\Phake::anyParameters())
+        $configParserMock = \Phake::mock('\Log2Test\Parser\ConfigParser');
+        \Phake::when($configParserMock)->getValueFromCache(\Phake::anyParameters())
             ->thenReturn('response');
-        \Phake::when($configParserMock)->getValueFromKey('removeDuplicateUrl')
+        \Phake::when($configParserMock)->getValueFromCache('removeDuplicateUrl')
             ->thenReturn(false);
-        \Phake::when($configParserMock)->getValueFromKey('hosts')
+        \Phake::when($configParserMock)->getValueFromCache('hosts')
             ->thenReturn(['www.shop2tout.com']);
-        \Phake::when($configParserMock)->getValueFromKey('numberOfLine')
+        \Phake::when($configParserMock)->getValueFromCache('numberOfLine')
             ->thenReturn(4);
-        \Phake::when($configParserMock)->getValueFromKey('logFormat')
+        \Phake::when($configParserMock)->getValueFromCache('logFormat')
             ->thenReturn('%h %l %u %t \"%r\" %>s %b');
-        \Phake::when($configParserMock)->getValueFromKey('extensions_allowed')
+        \Phake::when($configParserMock)->getValueFromCache('extensions_allowed')
             ->thenReturn(['*']);
         $this->setConfigParserMock($configParserMock);
     }

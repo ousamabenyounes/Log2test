@@ -12,7 +12,7 @@ class FeatureContext implements Context
 {
 
     /**
-     * @var \Log2Test\Apache2LogParser
+     * @var \Log2Test\Parser\Log\Apache2LogParser
      */
     protected $apach2LogParser;
 
@@ -33,7 +33,7 @@ class FeatureContext implements Context
      */
     public function apacheLogFileLogTestLog()
     {
-        $this->setApach2LogParser(\Log2Test\LogParserFactory::create());
+        $this->setApach2LogParser(\Log2Test\Parser\Log\LogParserFactory::create());
     }
 
     /**
@@ -45,8 +45,8 @@ class FeatureContext implements Context
         $apache2LogParser->parse();
         $progress = new ProgressBar(new ConsoleOutput(), 20);
 
-        $configParser = new \Log2Test\ConfigParser();
-        $logFile = $configParser->getValueFromKey('logFile');
+        $configParser = new \Log2Test\Parser\ConfigParser();
+        $logFile = $configParser->getValueFromCache('logFile');
         $testGenerator = new \Log2Test\TestGenerator($configParser, $logFile);
         $testGenerator->setTestStack($testStack);
         $testGenerator->setTestConfiguration($apache2LogParser->getTestConfiguration());
@@ -76,7 +76,7 @@ class FeatureContext implements Context
     }
     
     /**
-     * @return \Log2Test\Apache2LogParser
+     * @return \Log2Test\Parser\Log\Apache2LogParser
      */
     public function getApach2LogParser()
     {
@@ -84,7 +84,7 @@ class FeatureContext implements Context
     }
 
     /**
-     * @param \Log2Test\Apache2LogParser $apach2LogParser
+     * @param \Log2Test\Parser\Log\Apache2LogParser $apach2LogParser
      */
     public function setApach2LogParser($apach2LogParser)
     {
