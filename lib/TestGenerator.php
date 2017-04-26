@@ -3,12 +3,10 @@
 namespace Log2Test;
 
 
-use Log2Test\Builder\Admin\IndexBuilder;
 use Log2Test\Builder\MainHostBuilder;
 use Log2Test\Builder\TestUrlsBuilder;
 use Log2Test\Parser\ConfigParser;
 use Log2Test\Parser\ResultParser;
-use SebastianBergmann\CodeCoverage\Util;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
