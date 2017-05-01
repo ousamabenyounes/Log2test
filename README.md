@@ -31,7 +31,7 @@ composer install
   - An Apache2 Access Log file -> log/test.log   
 - Running **./bin/log2test** command will **generate and run all your tests**  
 
-<img src="web/img/log2testCurl.gif"></img>
+<img src="web/images/log2testCurl.gif"></img>
 
 # Configuration
 
