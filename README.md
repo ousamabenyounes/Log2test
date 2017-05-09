@@ -46,7 +46,7 @@ Here are all the configuration file's properties:
 
 | Property | Type | Description | Default | 
 |:----------:|:-------------:|:-------------:|---------------|
-| host | Array | List of hosts to parse [see samples here](#host-sample) | |
+| hostConfig | String | Array | List of hosts to parse [see samples here](#host-sample) | |
 | logFile | String | Path to your access log file | log/test.log |
 | testStack | String | Available test stack: "PhpunitSelenium" or "Curl" or "PhpunitCurl | Curl |
 | beginLine | Int | Begin parsing at line X | 0 |
@@ -82,30 +82,22 @@ On each commit, a complete build is launched on http://travis-ci.org/ousamabenyo
 
 ### Host Sample
 
-You can provide a simple array of strings like this:
+You can provide a simple  strings like this:
 
 ```php
-[
-    "www.shop2tout.com",
-    "www.epitech.fr"
-    ...
-]
+"www.shop2tout.com"
 ```
 
-You can also provide an array of arrays (source / destination) 
+You can also provide an array with source / destination value
 
 ```php
-[
-    ["www.sourcehost.com", "www.destinationhost.local"],
-    ["www.sourcehost2.com", "www.destinationhost2.local"],
     ["www.shop2tout.com", "www.shop2tout.local"],
-    ...
-]
+
 ```
 
 The first case is the source host you will be searching on your apache logs  
 The second case is the destination host which will be used on generated tests  
-**We recommend using the second format**, so your production website is not affected by the heavy tests.
+**We recommend using the second format**, so your production website is not affected by the heavy tests you'll launch'
 
 # Todo
 Add Global Reporting  

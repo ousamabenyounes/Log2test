@@ -1,5 +1,5 @@
 parameters:
-    hosts: [www.shop2tout.com]
+    hostConfig: www.shop2tout.com
     logFile: log/test.log
     testStack: Curl
     beginLine: 0
@@ -17,6 +17,6 @@ parameters:
     lastResultId: 1
     numberOfFileByTestSuite: 30
     testResultFormat: xml
-    forbiddenContents: []
-    builds: []
-    numberOfBuild: 5
+    forbiddenContents: {  }
+    builds: [2017-04-26_22-43-14]
+    numberOfBuild: 4
