@@ -2,7 +2,6 @@
 
 namespace Log2Test;
 
-use Log2Test\LogParser;
 use Log2Test\Parser\Log\Apache2LogParser;
 
 class LogParserTest extends \PHPUnit_Framework_TestCase
@@ -43,10 +42,12 @@ class LogParserTest extends \PHPUnit_Framework_TestCase
         $configParserMock = \Phake::mock('\Log2Test\Parser\ConfigParser');
         \Phake::when($configParserMock)->getValueFromCache(\Phake::anyParameters())
             ->thenReturn('response');
+        \Phake::when($configParserMock)->getValueFromCache(Constants::BEGIN_LINE)
+            ->thenReturn(0);
         \Phake::when($configParserMock)->getValueFromCache('removeDuplicateUrl')
             ->thenReturn(false);
-        \Phake::when($configParserMock)->getValueFromCache('hosts')
-            ->thenReturn(['www.shop2tout.com']);
+        \Phake::when($configParserMock)->getValueFromCache('hostConfig')
+            ->thenReturn('www.shop2tout.com');
         \Phake::when($configParserMock)->getValueFromCache('numberOfLine')
             ->thenReturn(4);
         \Phake::when($configParserMock)->getValueFromCache('logFormat')
@@ -84,7 +85,7 @@ class LogParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Kassner\LogParser\FormatException
+     * @expectedException \Kassner\LogParser\FormatException
      */
     public function testParseErrorThrowFormatException()
     {
