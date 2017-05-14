@@ -2,6 +2,7 @@
 
 namespace Log2Test\Parser\Log;
 
+use Log2Test\Constants;
 use Log2Test\Parser\ConfigParser;
 
 abstract class LogParser implements LogParserInterface
@@ -9,11 +10,11 @@ abstract class LogParser implements LogParserInterface
 
 
     /**
-     * list of host to keep from log file
+     * hostConfig to keep from log file
      *
      * @var array
      */
-    protected $hosts;
+    protected $hostConfig;
 
     /**
      * begin parsing at Line X
@@ -120,16 +121,15 @@ abstract class LogParser implements LogParserInterface
         $this->setConfigParser($configParser);
         $this->setSplFileObject($splFile);
         $this->setForbiddenContents($configParser->getValueFromCache('forbiddenContents'));
-        $this->setHosts($configParser->getValueFromCache('hosts'));
+        $this->sethostConfig($configParser->getValueFromCache('hostConfig'));
         $this->setNumberOfLine($configParser->getValueFromCache('numberOfLine'));
-        $this->setBeginLine($configParser->getValueFromCache(\Log2Test\Constants::BEGIN_LINE));
+        $this->setBeginLine($configParser->getValueFromCache(Constants::BEGIN_LINE));
         $this->setEndLine($this->getBeginLine() + $this->getNumberOfLine());
         $this->setBrowsers($configParser->getValueFromCache('browsers'));
         $this->setExtensionsAllowed($configParser->getValueFromCache('extensions_allowed'));
         $this->setRemoveDuplicateUrl($configParser->getValueFromCache('removeDuplicateUrl'));
         $this->setEncodedUrls($configParser->getValueFromCache('encodedUrls'));
         $this->setEnabledScreenshot($configParser->getValueFromCache('enabledScreenshot'));
-
         // Reset current seek cursor to begin Line
         $splFile->seek($configParser->getValueFromCache('beginLine'));
     }
@@ -144,28 +144,26 @@ abstract class LogParser implements LogParserInterface
      */
     public function parse()
     {
-        $hosts = $this->getHosts();
+        $hostConfig = $this->getHostConfig();
         $numberOfLine = $this->getNumberOfLine();
         $file = $this->getSplFileObject();
-        foreach ($hosts as $hostConfig) {
-            $dest = $hostConfig[\Log2Test\Constants::HOST_DEST];
-            $host = $hostConfig[\Log2Test\Constants::HOST_SOURCE];
-            $testConfiguration = $this->getTestConfiguration();
-            $testConfiguration[$host] = (!isset($testConfiguration[$host]) ? [] : $testConfiguration[$host]);
-            $testConfiguration[$host]['paths'] =
-                (!isset($testConfiguration[$host]['paths']) ? [] : $testConfiguration[$host]['paths']);
-            $testConfiguration[$host]['dest'] = $dest;
-            $this->setTestConfiguration($testConfiguration);
-            for ($i = 0; $i < $numberOfLine; $i++) {
-                $line = $file->current();
-                if ('' !== trim($line)) {
-                    $this->parseOneLine($line);
-                }
-                $file->next();
-                if ($file->eof())
-                {
-                    return false;
-                }
+        $dest = $hostConfig[\Log2Test\Constants::HOST_DEST];
+        $host = $hostConfig[\Log2Test\Constants::HOST_SOURCE];
+        $testConfiguration = $this->getTestConfiguration();
+        $testConfiguration[$host] = (!isset($testConfiguration[$host]) ? [] : $testConfiguration[$host]);
+        $testConfiguration[$host]['paths'] =
+            (!isset($testConfiguration[$host]['paths']) ? [] : $testConfiguration[$host]['paths']);
+        $testConfiguration[$host]['dest'] = $dest;
+        $this->setTestConfiguration($testConfiguration);
+        for ($i = 0; $i < $numberOfLine; $i++) {
+            $line = $file->current();
+            if ('' !== trim($line)) {
+                $this->parseOneLine($line);
+            }
+            $file->next();
+            if ($file->eof())
+            {
+                return false;
             }
         }
 
@@ -218,28 +216,25 @@ abstract class LogParser implements LogParserInterface
     /**
      * @return array
      */
-    public function getHosts()
+    public function getHostConfig()
     {
-        return $this->hosts;
+        return $this->hostConfig;
     }
 
     /**
-     * @param array $hosts
+     * @param array|string $hostConfig
      */
-    public function setHosts($hosts)
+    public function sethostConfig($hostConfig)
     {
-        $finalHosts = [];
-        foreach ($hosts as $host) {
-            if (is_array($host))
-            {
-                $finalDest = $host[\Log2Test\Constants::HOST_DEST];
-                $finalHost = $host[\Log2Test\Constants::HOST_SOURCE];
-            } else {
-                $finalDest = $finalHost = $host;
-            }
-           $finalHosts[] = [$finalHost, $finalDest];
+        if (is_array($hostConfig))
+        {
+            $finalHost = $hostConfig[\Log2Test\Constants::HOST_SOURCE];
+            $finalDest = $hostConfig[\Log2Test\Constants::HOST_DEST];
+        } else {
+            $finalDest = $finalHost = $hostConfig;
         }
-        $this->hosts = $finalHosts;
+        $finalHosts = [$finalHost, $finalDest];
+        $this->hostConfig = $finalHosts;
     }
 
     /**
